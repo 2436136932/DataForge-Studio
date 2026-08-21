@@ -998,6 +998,30 @@ body {
   border: 1px solid rgba(99, 102, 241, 0.35);
 }
 
+/* 仿真与源码切换药丸 */
+.btn-view-toggle {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #94a3b8;
+  font-size: 0.68rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-view-toggle:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-view-toggle.active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  font-weight: 700;
+}
+
 .panel-actions {
   display: flex;
   align-items: center;
@@ -1037,6 +1061,523 @@ body {
   background: var(--primary);
   color: #fff;
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+}
+
+/* ==========================================================================
+   全真文档与表格仿真视窗 (WYSIWYG Document & Sheet Simulation)
+   ========================================================================== */
+.visual-viewport {
+  flex: 1;
+  overflow: auto;
+  background: #080c16;
+  padding: 1rem 0.85rem;
+  max-height: calc(100vh - 290px);
+}
+
+.visual-empty-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #64748b;
+  gap: 0.5rem;
+  padding: 2rem 0;
+}
+
+.doc-canvas-workspace {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 1. Word A4 纸张仿真 */
+.word-a4-sheet {
+  width: 100%;
+  max-width: 680px;
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 2px;
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.1);
+  padding: 2.5rem 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "SimSun", sans-serif;
+}
+
+.word-page-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.word-brand-tag {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+.word-doc-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.3;
+}
+
+.word-meta-sub {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 1.4rem;
+  border-bottom: 2px solid #0284c7;
+  padding-bottom: 0.5rem;
+}
+
+.word-section-block {
+  margin-bottom: 1.15rem;
+}
+
+.word-h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0 0 0.3rem 0;
+}
+
+.word-p {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #334155;
+  margin: 0;
+  text-align: justify;
+}
+
+.word-table-container {
+  overflow-x: auto;
+  margin-top: 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+.word-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.word-table th {
+  background: #1e3a8a;
+  color: #ffffff;
+  padding: 0.5rem 0.65rem;
+  font-weight: 600;
+  border: 1px solid #1e3a8a;
+}
+
+.word-table td {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  background: #ffffff;
+}
+
+.word-table tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+.word-page-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.8rem;
+  margin-top: 1.8rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+/* 2. Adobe PDF A4 纸张仿真 */
+.pdf-a4-sheet {
+  width: 100%;
+  max-width: 680px;
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 2px;
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.7);
+  padding: 2.2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+.pdf-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.pdf-badge-icon {
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.pdf-title-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.pdf-page-indicator {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  font-family: var(--font-mono);
+}
+
+.pdf-divider-line {
+  height: 2px;
+  background: #ef4444;
+  margin-bottom: 1.2rem;
+}
+
+.pdf-section-item {
+  margin-bottom: 1rem;
+}
+
+.pdf-h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.3rem 0;
+}
+
+.pdf-para {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0;
+}
+
+.pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.pdf-table th {
+  background: #334155;
+  color: #ffffff;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #334155;
+}
+
+.pdf-table td {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.pdf-table tbody tr:nth-child(even) td {
+  background: #f1f5f9;
+}
+
+.pdf-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #cbd5e1;
+  margin-top: 1.8rem;
+  padding-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #64748b;
+  font-family: var(--font-mono);
+}
+
+/* 3. PowerPoint 16:9 幻灯片仿真 */
+.pptx-stage-workspace {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.pptx-slide-frame {
+  width: 100%;
+  max-width: 680px;
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, #0f172a 70%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75), 0 0 24px rgba(99, 102, 241, 0.2);
+  padding: 1.4rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f8fafc;
+}
+
+.pptx-slide-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pptx-brand-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fb923c;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pptx-slide-num {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  color: #cbd5e1;
+}
+
+.pptx-title-heading {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.6rem 0;
+  line-height: 1.3;
+  background: linear-gradient(90deg, #ffffff, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pptx-content-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pptx-bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pptx-bullet-list li {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #e2e8f0;
+  border-left: 3px solid #6366f1;
+}
+
+.pptx-slide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.pptx-slide-table th {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pptx-slide-table td {
+  background: rgba(15, 23, 42, 0.6);
+  color: #cbd5e1;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pptx-slide-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.pptx-nav-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+}
+
+/* 4. Excel 工作簿仿真 */
+.excel-sim-workspace {
+  width: 100%;
+  background: #1e293b;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.excel-window-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+.excel-ribbon-bar {
+  display: flex;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.25rem 0.5rem;
+  gap: 0.35rem;
+}
+
+.excel-tab-pill {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  color: #94a3b8;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.excel-tab-pill.active {
+  background: #16a34a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.excel-formula-box {
+  display: flex;
+  align-items: center;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  gap: 0.45rem;
+}
+
+.excel-name-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: bold;
+  background: #1e293b;
+  color: #38bdf8;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.excel-fx-icon {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: bold;
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.excel-formula-val {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #f1f5f9;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  outline: none;
+}
+
+.excel-sheet-scroll {
+  overflow: auto;
+  max-height: 380px;
+  background: #0b0f19;
+}
+
+.excel-sheet-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.74rem;
+}
+
+.excel-col-head {
+  background: #1e293b;
+  color: #94a3b8;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 75px;
+}
+
+.excel-corner-cell {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 32px;
+}
+
+.excel-row-num {
+  background: #1e293b;
+  color: #94a3b8;
+  text-align: center;
+  padding: 0.25rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+  width: 32px;
+}
+
+.excel-header-cell {
+  background: #16243c;
+  color: #38bdf8;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.excel-sheet-table td:not(.excel-row-num) {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.excel-bottom-bar {
+  display: flex;
+  align-items: center;
+  background: #0f172a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.55rem;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+}
+
+.excel-sheet-tab {
+  background: #1e293b;
+  color: #cbd5e1;
+  padding: 0.12rem 0.55rem;
+  border-radius: 3px 3px 0 0;
+}
+
+.excel-sheet-tab.active {
+  background: #16a34a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.excel-ready-text {
+  margin-left: auto;
+  color: #64748b;
 }
 
 /* 中间流向指示分界器 */

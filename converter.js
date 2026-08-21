@@ -696,6 +696,260 @@ window.FileConverter = {
     return JSON.stringify(data, null, 2);
   },
 
+  // 生成真实文档与表格的高保真仿真 HTML (WYSIWYG 真实文件打开效果)
+  renderVisualDocumentHtml(data, format, options = {}, rawParsed = null) {
+    if (!data || data.length === 0) {
+      return `<div class="visual-empty-placeholder"><div class="empty-icon">📄</div><p>暂无数据内容</p></div>`;
+    }
+
+    const title = options.title || 'DataForge 转换文档';
+    const isDocStructure = data.some(d => d['段落内容'] || d['详细内容'] || d['行内容'] || d['全文内容']);
+    const keys = data.length > 0 ? Object.keys(data[0]).filter(k => k !== '#') : [];
+
+    // ==========================================
+    // 1. Word 文档 (.docx) 真实 A4 排版仿真
+    // ==========================================
+    if (format === 'docx') {
+      let bodyHtml = '';
+      if (isDocStructure) {
+        bodyHtml = data.slice(0, 40).map((item, idx) => {
+          const t = item['章节/段落'] || item['幻灯片标题'] || item['要素 / 字段 / 章节'] || `第 ${idx + 1} 节`;
+          const c = item['段落内容'] || item['详细内容'] || item['全文内容'] || item['行内容'] || '';
+          return `
+            <div class="word-section-block">
+              <h2 class="word-h2">${idx + 1}. ${t}</h2>
+              <p class="word-p">${c}</p>
+            </div>
+          `;
+        }).join('');
+      } else {
+        bodyHtml = `
+          <div class="word-table-container">
+            <table class="word-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align: center;">#</th>
+                  ${keys.map(k => `<th>${k}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${data.slice(0, 50).map((row, idx) => `
+                  <tr>
+                    <td style="text-align: center; color: #64748b; font-weight: bold;">${idx + 1}</td>
+                    ${keys.map(k => `<td>${row[k] === null || row[k] === undefined ? '<span class="cell-null">null</span>' : (typeof row[k] === 'object' ? JSON.stringify(row[k]) : row[k])}</td>`).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="doc-canvas-workspace">
+          <div class="word-a4-sheet">
+            <div class="word-page-header">
+              <span class="word-brand-tag">📘 Microsoft Word (.docx) 真实排版仿真</span>
+              <span class="word-page-meta">A4 · 页边距 25.4mm</span>
+            </div>
+            <h1 class="word-doc-title">${title}</h1>
+            <div class="word-meta-sub">
+              <span>生成日期: ${new Date().toLocaleDateString('zh-CN')}</span>
+              <span>记录数: ${data.length}</span>
+              <span>排版: Office 商务标准</span>
+            </div>
+            <div class="word-content-body">
+              ${bodyHtml}
+            </div>
+            <div class="word-page-footer">
+              <span>第 1 页 (仅展示前 50 条排版)</span>
+              <span>DataForge Universal Engine</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 2. Adobe PDF (.pdf) 矢量页面仿真
+    // ==========================================
+    if (format === 'pdf') {
+      let contentHtml = '';
+      if (isDocStructure) {
+        contentHtml = data.slice(0, 30).map((item, idx) => {
+          const t = item['章节/段落'] || item['幻灯片标题'] || item['要素 / 字段 / 章节'] || `段落 #${idx + 1}`;
+          const c = item['段落内容'] || item['详细内容'] || item['全文内容'] || item['行内容'] || '';
+          return `
+            <div class="pdf-section-item">
+              <h3 class="pdf-h3">${idx + 1}. ${t}</h3>
+              <p class="pdf-para">${c}</p>
+            </div>
+          `;
+        }).join('');
+      } else {
+        contentHtml = `
+          <table class="pdf-table">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">#</th>
+                ${keys.map(k => `<th>${k}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${data.slice(0, 45).map((row, idx) => `
+                <tr>
+                  <td style="text-align: center; color: #64748b;">${idx + 1}</td>
+                  ${keys.map(k => `<td>${row[k] ?? ''}</td>`).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      return `
+        <div class="doc-canvas-workspace">
+          <div class="pdf-a4-sheet">
+            <div class="pdf-top-bar">
+              <div class="pdf-badge-icon">PDF</div>
+              <div class="pdf-title-text">${title} - 导出报告</div>
+              <div class="pdf-page-indicator">PAGE 1 / 1</div>
+            </div>
+            <div class="pdf-divider-line"></div>
+            <div class="pdf-body-content">
+              ${contentHtml}
+            </div>
+            <div class="pdf-bottom-bar">
+              <span>DataForge 矢量打印排版引擎 · 100% 离线生成</span>
+              <span>Page 1 of 1</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 3. PowerPoint (.pptx) 16:9 幻灯片放映画布
+    // ==========================================
+    if (format === 'pptx') {
+      let slideTitle = title;
+      let slideContent = '';
+      const totalSlides = isDocStructure ? Math.min(data.length, 30) : Math.ceil(Math.min(data.length, 30) / 6);
+
+      if (isDocStructure) {
+        const item = data[0];
+        slideTitle = item['章节/段落'] || item['幻灯片标题'] || item['要素 / 字段 / 章节'] || '核心要点与大纲';
+        const rawContent = item['段落内容'] || item['详细内容'] || item['全文内容'] || item['行内容'] || '';
+        const points = rawContent.split(/\r?\n|(?<=[。！？\.\?!])\s+/).filter(Boolean);
+        slideContent = `
+          <ul class="pptx-bullet-list">
+            ${points.slice(0, 5).map(p => `<li>${p}</li>`).join('')}
+          </ul>
+        `;
+      } else {
+        slideTitle = `数据分析表 (第 1 组: 记录 1 - ${Math.min(data.length, 6)})`;
+        const slice = data.slice(0, 6);
+        slideContent = `
+          <table class="pptx-slide-table">
+            <thead>
+              <tr>${keys.slice(0, 5).map(k => `<th>${k}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${slice.map(row => `<tr>${keys.slice(0, 5).map(k => `<td>${row[k] ?? ''}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      return `
+        <div class="pptx-stage-workspace">
+          <div class="pptx-slide-frame">
+            <div class="pptx-slide-top">
+              <div class="pptx-brand-label">📙 PowerPoint 16:9 演示放映画布</div>
+              <div class="pptx-slide-num">幻灯片 1 / ${totalSlides}</div>
+            </div>
+            <h2 class="pptx-title-heading">${slideTitle}</h2>
+            <div class="pptx-content-area">
+              ${slideContent}
+            </div>
+            <div class="pptx-slide-bottom">
+              <span class="pptx-theme-tag">Office 365 商务演示主题</span>
+              <div class="pptx-nav-pill">
+                <span>◀</span>
+                <span>放映中 (共 ${totalSlides} 页)</span>
+                <span>▶</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 4. Excel 工作簿 (.xlsx / .xls) 电子表格仿真
+    // ==========================================
+    if (format === 'xlsx' || format === 'xls') {
+      const colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].slice(0, Math.max(keys.length, 1));
+      const firstVal = data.length > 0 && keys.length > 0 ? (data[0][keys[0]] ?? '') : '';
+
+      return `
+        <div class="excel-sim-workspace">
+          <div class="excel-window-frame">
+            <div class="excel-ribbon-bar">
+              <div class="excel-tab-pill active">开始</div>
+              <div class="excel-tab-pill">插入</div>
+              <div class="excel-tab-pill">页面布局</div>
+              <div class="excel-tab-pill">公式</div>
+              <div class="excel-tab-pill">数据</div>
+            </div>
+            <div class="excel-formula-box">
+              <span class="excel-name-tag">A1</span>
+              <span class="excel-fx-icon">fx</span>
+              <input type="text" class="excel-formula-val" value="${String(firstVal)}" readonly />
+            </div>
+            <div class="excel-sheet-scroll">
+              <table class="excel-sheet-table">
+                <thead>
+                  <tr class="excel-col-header-row">
+                    <th class="excel-corner-cell"></th>
+                    ${colLetters.map(l => `<th class="excel-col-head">${l}</th>`).join('')}
+                  </tr>
+                  <tr class="excel-row-data-header">
+                    <td class="excel-row-num">1</td>
+                    ${keys.map(k => `<td class="excel-header-cell">${k}</td>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${data.slice(0, 50).map((row, rIdx) => `
+                    <tr>
+                      <td class="excel-row-num">${rIdx + 2}</td>
+                      ${keys.map(k => `<td>${row[k] === null || row[k] === undefined ? '' : row[k]}</td>`).join('')}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="excel-bottom-bar">
+              <span class="excel-sheet-tab active">Sheet1</span>
+              <span class="excel-sheet-tab add">+</span>
+              <span class="excel-ready-text">就绪 · 共 ${data.length} 行 ${keys.length} 列</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 5. 纯文本 / 代码类格式 (JSON / JSONL / CSV / MD / TXT)
+    // ==========================================
+    const textGen = this.generatePreviewText(data, format, options, 60);
+    return `
+      <div class="code-viewer-container">
+        <pre class="code-block"><code class="language-${format}">${textGen.text}</code></pre>
+      </div>
+    `;
+  },
+
   async convert(file, srcFormat, targetFormat, options = {}) {
     const parsed = await this.parseFile(file, srcFormat);
     const data = parsed.data;
@@ -709,5 +963,6 @@ window.FileConverter = {
     return await generator(data, { ...options, title: baseTitle, parsedRaw: parsed });
   }
 };
+
 
 

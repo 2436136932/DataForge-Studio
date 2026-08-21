@@ -254,22 +254,26 @@
                             </div>
                         </div>
 
-                        <!-- 视图 2: 代码与前后对比视图 -->
+                        <!-- 视图 2: 代码与前后仿真对比视图 -->
                         <div class="tab-content active" id="tabCode" style="display:none;">
                             <div class="code-split-wrapper view-mode-split" id="codeSplitWrapper">
-                                <!-- 左侧：转换前 (源格式) -->
+                                <!-- 左侧：转换前 (源格式仿真与代码) -->
                                 <div class="code-panel-box panel-source" id="sourceCodePanel">
                                     <div class="code-panel-header">
                                         <div class="panel-tag-group">
                                             <span class="panel-role-badge role-src">📥 转换前 (源)</span>
                                             <span class="code-lang-tag tag-src" id="sourceFormatTag">XLSX</span>
+                                            <button type="button" class="btn-view-toggle active" id="toggleSourceVisualBtn" title="切换全真渲染视图与纯代码">👁️ 真实渲染</button>
                                         </div>
                                         <div class="panel-actions">
                                             <span class="panel-meta-text" id="sourceMetaTag">--</span>
                                             <button type="button" class="btn-copy-mini" id="copySourceCodeBtn" title="复制转换前数据">📋 复制源数据</button>
                                         </div>
                                     </div>
-                                    <div class="code-scroll-area">
+                                    <div class="visual-viewport" id="sourceVisualViewport">
+                                        <!-- 动态仿真文档与表格渲染 -->
+                                    </div>
+                                    <div class="code-scroll-area" id="sourceCodeArea" style="display:none;">
                                         <pre class="code-block"><code id="sourceCodeContent">// 暂无源数据</code></pre>
                                     </div>
                                 </div>
@@ -282,19 +286,23 @@
                                     </div>
                                 </div>
 
-                                <!-- 右侧：转换后 (目标格式实时预览) -->
+                                <!-- 右侧：转换后 (目标格式仿真与代码) -->
                                 <div class="code-panel-box panel-target" id="targetCodePanel">
                                     <div class="code-panel-header">
                                         <div class="panel-tag-group">
                                             <span class="panel-role-badge role-tgt">📤 转换后 (目标)</span>
-                                            <span class="code-lang-tag tag-tgt" id="targetFormatTag">PDF (实时预览)</span>
+                                            <span class="code-lang-tag tag-tgt" id="targetFormatTag">DOCX (真实排版)</span>
+                                            <button type="button" class="btn-view-toggle active" id="toggleTargetVisualBtn" title="切换全真渲染视图与纯代码">👁️ 真实渲染</button>
                                         </div>
                                         <div class="panel-actions">
                                             <span class="panel-meta-text" id="targetMetaTag">--</span>
                                             <button type="button" class="btn-copy-mini btn-copy-highlight" id="copyTargetCodeBtn" title="复制转换后目标格式数据">⚡ 复制目标数据</button>
                                         </div>
                                     </div>
-                                    <div class="code-scroll-area">
+                                    <div class="visual-viewport" id="targetVisualViewport">
+                                        <!-- 动态仿真文档与表格渲染 -->
+                                    </div>
+                                    <div class="code-scroll-area" id="targetCodeArea" style="display:none;">
                                         <pre class="code-block"><code id="targetCodeContent">// 暂无目标数据</code></pre>
                                     </div>
                                 </div>

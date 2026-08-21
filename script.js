@@ -51,15 +51,61 @@ const codeSplitWrapper = document.getElementById('codeSplitWrapper');
 const sourceCodePanel = document.getElementById('sourceCodePanel');
 const sourceFormatTag = document.getElementById('sourceFormatTag');
 const sourceMetaTag = document.getElementById('sourceMetaTag');
+const sourceVisualViewport = document.getElementById('sourceVisualViewport');
+const sourceCodeArea = document.getElementById('sourceCodeArea');
 const sourceCodeContent = document.getElementById('sourceCodeContent');
 const copySourceCodeBtn = document.getElementById('copySourceCodeBtn');
+const toggleSourceVisualBtn = document.getElementById('toggleSourceVisualBtn');
 
 // 转换后 (目标) 元素
 const targetCodePanel = document.getElementById('targetCodePanel');
 const targetFormatTag = document.getElementById('targetFormatTag');
 const targetMetaTag = document.getElementById('targetMetaTag');
+const targetVisualViewport = document.getElementById('targetVisualViewport');
+const targetCodeArea = document.getElementById('targetCodeArea');
 const targetCodeContent = document.getElementById('targetCodeContent');
 const copyTargetCodeBtn = document.getElementById('copyTargetCodeBtn');
+const toggleTargetVisualBtn = document.getElementById('toggleTargetVisualBtn');
+
+// 视图模式状态 (源与目标独立)
+let isSourceVisual = true;
+let isTargetVisual = true;
+
+// 切换源视图模式
+if (toggleSourceVisualBtn) {
+  toggleSourceVisualBtn.addEventListener('click', () => {
+    isSourceVisual = !isSourceVisual;
+    if (isSourceVisual) {
+      toggleSourceVisualBtn.classList.add('active');
+      toggleSourceVisualBtn.textContent = '👁️ 真实渲染';
+      sourceVisualViewport.style.display = 'block';
+      sourceCodeArea.style.display = 'none';
+    } else {
+      toggleSourceVisualBtn.classList.remove('active');
+      toggleSourceVisualBtn.textContent = '💻 纯代码';
+      sourceVisualViewport.style.display = 'none';
+      sourceCodeArea.style.display = 'block';
+    }
+  });
+}
+
+// 切换目标视图模式
+if (toggleTargetVisualBtn) {
+  toggleTargetVisualBtn.addEventListener('click', () => {
+    isTargetVisual = !isTargetVisual;
+    if (isTargetVisual) {
+      toggleTargetVisualBtn.classList.add('active');
+      toggleTargetVisualBtn.textContent = '👁️ 真实渲染';
+      targetVisualViewport.style.display = 'block';
+      targetCodeArea.style.display = 'none';
+    } else {
+      toggleTargetVisualBtn.classList.remove('active');
+      toggleTargetVisualBtn.textContent = '💻 纯代码';
+      targetVisualViewport.style.display = 'none';
+      targetCodeArea.style.display = 'block';
+    }
+  });
+}
 
 const splitDivider = document.getElementById('splitDivider');
 
@@ -417,13 +463,27 @@ function renderTableView(data, keys, filterQuery = '') {
   });
 }
 
-// 渲染双栏代码与格式对比视图
+// 渲染双栏真实仿真与格式对比视图
 function renderCodeSplitView(data, srcFormat) {
-  // 1. 渲染转换前 (源) 视图
+  // 1. 渲染转换前 (源) 仿真视窗与代码
   const srcUpper = srcFormat.toUpperCase();
   sourceFormatTag.textContent = srcUpper;
   sourceMetaTag.textContent = `${data.length} 项要素`;
 
+  const options = {
+    title: currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') : '源文档',
+    prettyJson: optPrettyJson.checked,
+    bom: optCsvBom.checked,
+    docHeaders: optDocHeaders ? optDocHeaders.checked : true,
+    pptxTheme: optPptxTheme ? optPptxTheme.checked : true
+  };
+
+  // 生成真实仿真视图
+  if (sourceVisualViewport) {
+    sourceVisualViewport.innerHTML = window.FileConverter.renderVisualDocumentHtml(data, srcFormat, options, parsedResult);
+  }
+
+  // 纯文本源码
   if (sourceRawContent && sourceRawContent.trim().length > 0) {
     const rawLines = sourceRawContent.split('\n');
     if (rawLines.length > 70) {
@@ -441,21 +501,42 @@ function renderCodeSplitView(data, srcFormat) {
   updateTargetPreview();
 }
 
-// 实时计算并刷新目标格式预览
+// 实时计算并刷新目标格式真实仿真预览
 function updateTargetPreview() {
   if (!parsedDataset || parsedDataset.length === 0) return;
 
   const targetFormat = targetFormatSelect.value;
   const options = {
+    title: currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') : '转换文档',
     prettyJson: optPrettyJson.checked,
     bom: optCsvBom.checked,
     docHeaders: optDocHeaders ? optDocHeaders.checked : true,
     pptxTheme: optPptxTheme ? optPptxTheme.checked : true
   };
 
-  const preview = window.FileConverter.generatePreviewText(parsedDataset, targetFormat, options, 60);
+  const formatLabels = {
+    docx: 'DOCX (Word A4 标准排版)',
+    pdf: 'PDF (A4 矢量打印排版)',
+    pptx: 'PPTX (16:9 幻灯片放映)',
+    xlsx: 'XLSX (Excel 电子表格)',
+    xls: 'XLS (Excel 工作表)',
+    json: 'JSON (结构化对象)',
+    jsonl: 'JSONL (行记录流)',
+    csv: 'CSV (逗号分隔数据)',
+    md: 'Markdown (结构化大纲)',
+    txt: '纯文本 (标准文本流)',
+    html: 'HTML (网页排版格式)'
+  };
 
-  targetFormatTag.textContent = `${preview.lang} (实时)`;
+  targetFormatTag.textContent = formatLabels[targetFormat] || `${targetFormat.toUpperCase()} (实时)`;
+
+  // 1. 渲染真实仿真视窗
+  if (targetVisualViewport) {
+    targetVisualViewport.innerHTML = window.FileConverter.renderVisualDocumentHtml(parsedDataset, targetFormat, options, parsedResult);
+  }
+
+  // 2. 渲染纯代码文本与统计
+  const preview = window.FileConverter.generatePreviewText(parsedDataset, targetFormat, options, 60);
   targetMetaTag.textContent = preview.isTruncated
     ? `预览前 ${preview.previewRows} / 共 ${preview.totalRows} 项`
     : `共 ${preview.totalRows} 项`;
