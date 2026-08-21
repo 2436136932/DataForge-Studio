@@ -1,18 +1,20 @@
 /* ==========================================================================
-   DataForge Studio - 全局多主题皮肤系统 (Multi-Theme Design System)
+   DataForge Studio - 全局顶流开源多主题皮肤系统 (Open-Source Theme Ecosystem)
    ========================================================================== */
 
-/* 1. 🌌 默认旗舰：深空极光 (Linear Deep Aurora) */
+/* 1. 🌌 旗舰极客：深空极光 (Linear & Vercel Obsidian Aurora) */
 :root, [data-theme="aurora"] {
-  --bg-app: #080c16;
-  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.16) 0px, transparent 50%),
-                     radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.12) 0px, transparent 50%);
-  --bg-panel: #0d1424;
-  --bg-card: rgba(15, 23, 42, 0.85);
-  --bg-card-header: rgba(11, 18, 33, 0.85);
-  --bg-card-hover: rgba(24, 35, 60, 0.95);
-  --bg-input: #090e1a;
-  --bg-subtle: rgba(15, 23, 42, 0.65);
+  --theme-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bg-app: #08090d;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.14) 0px, transparent 50%),
+                     radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.08) 0px, transparent 60%);
+  --bg-panel: #0d111a;
+  --bg-card: rgba(14, 18, 27, 0.88);
+  --bg-card-header: rgba(10, 13, 20, 0.9);
+  --bg-card-hover: rgba(22, 28, 42, 0.95);
+  --bg-input: #080a0f;
+  --bg-subtle: rgba(18, 24, 38, 0.7);
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: #6366f1;
   --text-main: #f8fafc;
@@ -32,128 +34,188 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-  --font-mono: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+  --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --card-top-border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* 2. 🌸 治愈温润：拿铁摩卡 (Catppuccin Mocha) */
+/* 2. 🌸 治愈萌润：拿铁摩卡 (Catppuccin Mocha Plush) */
 [data-theme="catppuccin"] {
-  --bg-app: #1e1e2e;
-  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(203, 166, 247, 0.22) 0px, transparent 50%),
-                     radial-gradient(at 100% 100%, rgba(245, 194, 231, 0.16) 0px, transparent 50%);
-  --bg-panel: #181825;
-  --bg-card: rgba(30, 30, 46, 0.88);
-  --bg-card-header: rgba(24, 24, 37, 0.9);
+  --theme-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg-app: #181825;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(203, 166, 247, 0.25) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(245, 194, 231, 0.2) 0px, transparent 50%),
+                     radial-gradient(at 50% 10%, rgba(137, 180, 250, 0.12) 0px, transparent 55%);
+  --bg-panel: #1e1e2e;
+  --bg-card: rgba(30, 30, 46, 0.9);
+  --bg-card-header: rgba(24, 24, 37, 0.95);
   --bg-card-hover: rgba(49, 50, 68, 0.95);
   --bg-input: #11111b;
-  --bg-subtle: rgba(49, 50, 68, 0.6);
-  --border-subtle: rgba(203, 166, 247, 0.18);
+  --bg-subtle: rgba(49, 50, 68, 0.65);
+  --border-subtle: rgba(203, 166, 247, 0.22);
   --border-focus: #cba6f7;
   --text-main: #cdd6f4;
   --text-muted: #bac2de;
   --text-dim: #7f849c;
   --primary: #cba6f7;
   --primary-hover: #b4befe;
-  --primary-gradient: linear-gradient(135deg, #cba6f7 0%, #f5c2e7 100%);
-  --primary-glow: rgba(203, 166, 247, 0.5);
-  --primary-subtle: rgba(203, 166, 247, 0.18);
-  --primary-border: rgba(203, 166, 247, 0.4);
-  --step-color: #cba6f7;
+  --primary-gradient: linear-gradient(135deg, #cba6f7 0%, #f5c2e7 50%, #fab387 100%);
+  --primary-glow: rgba(203, 166, 247, 0.55);
+  --primary-subtle: rgba(203, 166, 247, 0.2);
+  --primary-border: rgba(203, 166, 247, 0.45);
+  --step-color: #f5c2e7;
   --brand-title-gradient: linear-gradient(135deg, #cdd6f4 0%, #f5c2e7 100%);
   --success: #a6e3a1;
   --warning: #f9e2af;
   --danger: #f38ba8;
-  --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.45);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-card: 0 16px 36px -4px rgba(203, 166, 247, 0.15), 0 8px 20px rgba(0, 0, 0, 0.35);
+  --card-top-border: 1px solid rgba(203, 166, 247, 0.35);
 }
 
-/* 3. ⚡ 极客霓虹：东京赛博 (Tokyo Night / Cyberpunk) */
+/* 3. ⚡ 赛博霓虹：东京矩阵 (Tokyo Night / Cyberpunk Neon Matrix) */
 [data-theme="tokyo"] {
-  --bg-app: #06070c;
-  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(187, 154, 247, 0.25) 0px, transparent 50%),
-                     radial-gradient(at 100% 100%, rgba(125, 207, 255, 0.2) 0px, transparent 50%);
-  --bg-panel: #0e1019;
-  --bg-card: rgba(16, 18, 29, 0.92);
-  --bg-card-header: rgba(9, 10, 16, 0.92);
-  --bg-card-hover: rgba(26, 29, 46, 0.95);
+  --theme-font: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --bg-app: #05060b;
+  --bg-app-gradient: linear-gradient(rgba(125, 207, 255, 0.04) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(125, 207, 255, 0.04) 1px, transparent 1px),
+                     radial-gradient(at 0% 0%, rgba(187, 154, 247, 0.3) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(125, 207, 255, 0.25) 0px, transparent 50%);
+  --bg-panel: #0a0c13;
+  --bg-card: rgba(12, 14, 22, 0.94);
+  --bg-card-header: rgba(7, 8, 13, 0.96);
+  --bg-card-hover: rgba(22, 26, 40, 0.98);
   --bg-input: #040508;
-  --bg-subtle: rgba(26, 29, 44, 0.75);
-  --border-subtle: rgba(125, 207, 255, 0.2);
+  --bg-subtle: rgba(22, 26, 40, 0.85);
+  --border-subtle: rgba(125, 207, 255, 0.3);
   --border-focus: #7dcfff;
   --text-main: #c0caf5;
   --text-muted: #9aa5ce;
   --text-dim: #565f89;
-  --primary: #bb9af7;
-  --primary-hover: #7dcfff;
-  --primary-gradient: linear-gradient(135deg, #bb9af7 0%, #7dcfff 100%);
-  --primary-glow: rgba(187, 154, 247, 0.6);
-  --primary-subtle: rgba(187, 154, 247, 0.2);
-  --primary-border: rgba(125, 207, 255, 0.45);
+  --primary: #7dcfff;
+  --primary-hover: #bb9af7;
+  --primary-gradient: linear-gradient(135deg, #7dcfff 0%, #bb9af7 100%);
+  --primary-glow: rgba(125, 207, 255, 0.65);
+  --primary-subtle: rgba(125, 207, 255, 0.22);
+  --primary-border: rgba(125, 207, 255, 0.5);
   --step-color: #7dcfff;
   --brand-title-gradient: linear-gradient(135deg, #ffffff 0%, #7dcfff 100%);
   --success: #9ece6a;
   --warning: #e0af68;
   --danger: #f7768e;
-  --shadow-card: 0 14px 35px -5px rgba(0, 0, 0, 0.8), 0 0 16px rgba(187, 154, 247, 0.15);
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --shadow-card: 0 0 20px rgba(125, 207, 255, 0.2), 0 16px 36px rgba(0, 0, 0, 0.9);
+  --card-top-border: 2px solid #7dcfff;
 }
 
-/* 4. ❄️ 北欧极简：极地冰霜 (Nordic Frost) */
+/* 4. ❄️ 北欧极简：冰霜毛玻璃 (Nordic Glacial Frosted Glass) */
 [data-theme="nord"] {
-  --bg-app: #242933;
-  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(136, 192, 208, 0.2) 0px, transparent 50%),
-                     radial-gradient(at 100% 100%, rgba(94, 129, 172, 0.16) 0px, transparent 50%);
-  --bg-panel: #2e3440;
-  --bg-card: rgba(46, 52, 64, 0.9);
-  --bg-card-header: rgba(36, 41, 51, 0.92);
-  --bg-card-hover: rgba(59, 66, 82, 0.95);
-  --bg-input: #1e222a;
-  --bg-subtle: rgba(59, 66, 82, 0.7);
-  --border-subtle: rgba(136, 192, 208, 0.2);
+  --theme-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg-app: #1e222a;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(136, 192, 208, 0.22) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(94, 129, 172, 0.18) 0px, transparent 50%),
+                     radial-gradient(at 50% 50%, rgba(163, 190, 140, 0.1) 0px, transparent 60%);
+  --bg-panel: rgba(46, 52, 64, 0.85);
+  --bg-card: rgba(46, 52, 64, 0.72);
+  --bg-card-header: rgba(36, 41, 51, 0.88);
+  --bg-card-hover: rgba(59, 66, 82, 0.9);
+  --bg-input: #1a1e24;
+  --bg-subtle: rgba(59, 66, 82, 0.65);
+  --border-subtle: rgba(136, 192, 208, 0.28);
   --border-focus: #88c0d0;
   --text-main: #eceff4;
   --text-muted: #d8dee9;
   --text-dim: #4c566a;
   --primary: #88c0d0;
   --primary-hover: #81a1c1;
-  --primary-gradient: linear-gradient(135deg, #88c0d0 0%, #5e81ac 100%);
-  --primary-glow: rgba(136, 192, 208, 0.45);
-  --primary-subtle: rgba(136, 192, 208, 0.2);
-  --primary-border: rgba(136, 192, 208, 0.4);
+  --primary-gradient: linear-gradient(135deg, #88c0d0 0%, #81a1c1 50%, #5e81ac 100%);
+  --primary-glow: rgba(136, 192, 208, 0.5);
+  --primary-subtle: rgba(136, 192, 208, 0.22);
+  --primary-border: rgba(136, 192, 208, 0.45);
   --step-color: #88c0d0;
   --brand-title-gradient: linear-gradient(135deg, #eceff4 0%, #88c0d0 100%);
   --success: #a3be8c;
   --warning: #ebcb8b;
   --danger: #bf616a;
-  --shadow-card: 0 12px 28px -5px rgba(0, 0, 0, 0.45);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-card: 0 16px 36px -4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(136, 192, 208, 0.15);
+  --card-top-border: 1px solid rgba(136, 192, 208, 0.45);
 }
 
-/* 5. ☀️ 晨曦明亮：苹果瓷白 (Vercel & macOS Clean Light) */
+/* 5. 🍂 复古黑胶：琥珀极客 (Gruvbox Warm Vintage Charcoal) */
+[data-theme="gruvbox"] {
+  --theme-font: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  --bg-app: #1d2021;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(250, 189, 47, 0.15) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(254, 128, 25, 0.12) 0px, transparent 50%),
+                     radial-gradient(at 50% 50%, rgba(184, 187, 38, 0.08) 0px, transparent 60%);
+  --bg-panel: #282828;
+  --bg-card: #282828;
+  --bg-card-header: #1d2021;
+  --bg-card-hover: #32302f;
+  --bg-input: #141617;
+  --bg-subtle: #32302f;
+  --border-subtle: rgba(250, 189, 47, 0.3);
+  --border-focus: #fabd2f;
+  --text-main: #fbf1c7;
+  --text-muted: #d5c4a1;
+  --text-dim: #928374;
+  --primary: #fabd2f;
+  --primary-hover: #fe8019;
+  --primary-gradient: linear-gradient(135deg, #fabd2f 0%, #fe8019 100%);
+  --primary-glow: rgba(250, 189, 47, 0.45);
+  --primary-subtle: rgba(250, 189, 47, 0.18);
+  --primary-border: rgba(250, 189, 47, 0.45);
+  --step-color: #fe8019;
+  --brand-title-gradient: linear-gradient(135deg, #fbf1c7 0%, #fabd2f 100%);
+  --success: #b8bb26;
+  --warning: #fabd2f;
+  --danger: #fb4934;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-card: 5px 5px 0px rgba(0, 0, 0, 0.6);
+  --card-top-border: 2px solid #fabd2f;
+}
+
+/* 6. ☀️ 晨曦明亮：苹果瓷白 (Apple Cupertino & Vercel Clean Light) */
 [data-theme="light"] {
-  --bg-app: #f1f5f9;
+  --theme-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --bg-app: #f8fafc;
   --bg-app-gradient: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
                      radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.06) 0px, transparent 50%);
   --bg-panel: #ffffff;
   --bg-card: #ffffff;
   --bg-card-header: #f8fafc;
-  --bg-card-hover: #f8fafc;
-  --bg-input: #f8fafc;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #f1f5f9;
   --bg-subtle: #f1f5f9;
   --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-focus: #2563eb;
+  --border-focus: #0071e3;
   --text-main: #0f172a;
   --text-muted: #475569;
   --text-dim: #94a3b8;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
-  --primary-glow: rgba(37, 99, 235, 0.3);
-  --primary-subtle: rgba(37, 99, 235, 0.08);
-  --primary-border: rgba(37, 99, 235, 0.25);
-  --step-color: #2563eb;
+  --primary: #0071e3;
+  --primary-hover: #005bb5;
+  --primary-gradient: linear-gradient(135deg, #0071e3 0%, #0284c7 100%);
+  --primary-glow: rgba(0, 113, 227, 0.3);
+  --primary-subtle: rgba(0, 113, 227, 0.08);
+  --primary-border: rgba(0, 113, 227, 0.25);
+  --step-color: #0071e3;
   --brand-title-gradient: linear-gradient(135deg, #0f172a 0%, #334155 100%);
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
-  --shadow-card: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 20px 45px -15px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --card-top-border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -162,13 +224,16 @@
   padding: 0;
   transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
               border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-              color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-radius 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--theme-font);
   background-color: var(--bg-app);
   background-image: var(--bg-app-gradient);
+  background-size: 100% 100%, 32px 32px, auto, auto;
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -198,9 +263,10 @@ body {
   justify-content: space-between;
   padding: 0.75rem 1.25rem;
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
+  border-top: var(--card-top-border);
   border-radius: var(--radius-lg);
   margin-bottom: 1.25rem;
   box-shadow: var(--shadow-card);
@@ -417,10 +483,15 @@ body {
   box-shadow: 0 0 8px rgba(136, 192, 208, 0.5);
 }
 
+.dot-gruvbox {
+  background: linear-gradient(135deg, #1d2021 0%, #fabd2f 50%, #fe8019 100%);
+  box-shadow: 0 0 8px rgba(250, 189, 47, 0.5);
+}
+
 .dot-light {
-  background: linear-gradient(135deg, #ffffff 0%, #2563eb 50%, #0284c7 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #0071e3 50%, #0284c7 100%);
   border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 0 8px rgba(0, 113, 227, 0.3);
 }
 
 .theme-info {
@@ -472,17 +543,18 @@ body {
 
 .wb-card {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
+  border-top: var(--card-top-border);
   border-radius: var(--radius-lg);
   padding: 1.15rem;
   box-shadow: var(--shadow-card);
-  transition: border-color 0.2s;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
 }
 
 .wb-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--primary-border);
 }
 
 .card-header {
@@ -922,15 +994,17 @@ select optgroup {
 
 .workspace-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
+  border-top: var(--card-top-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 /* 工作区顶栏工具条 */
@@ -2409,12 +2483,109 @@ select option {
 }
 
 /* ==========================================================================
-   6. ☀️ 浅色主题 (Light Theme) 专项精细化适配
+   6. 深度主题定制与特异化视觉体系 (Deep Theme-Specific Aesthetics)
    ========================================================================== */
+
+/* 1. 🌌 Linear Obsidian Aurora */
+[data-theme="aurora"] .btn-convert-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #38bdf8 100%);
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+}
+
+/* 2. 🌸 Catppuccin Mocha Plush */
+[data-theme="catppuccin"] .brand-icon {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #cba6f7 0%, #f5c2e7 100%);
+}
+[data-theme="catppuccin"] .btn-convert-primary {
+  border-radius: 16px;
+  background: linear-gradient(135deg, #cba6f7 0%, #f5c2e7 50%, #fab387 100%);
+  color: #11111b;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(203, 166, 247, 0.45);
+}
+[data-theme="catppuccin"] .step-num {
+  border-radius: 8px;
+}
+[data-theme="catppuccin"] .drop-zone {
+  border-radius: 18px;
+}
+
+/* 3. ⚡ Tokyo Night / Cyberpunk Neon Matrix */
+[data-theme="tokyo"] .brand-name {
+  text-shadow: 0 0 10px rgba(125, 207, 255, 0.6);
+  letter-spacing: 0.05em;
+}
+[data-theme="tokyo"] .step-num {
+  border: 1px solid #7dcfff;
+  color: #7dcfff;
+  background: rgba(125, 207, 255, 0.15);
+  box-shadow: 0 0 8px rgba(125, 207, 255, 0.35);
+}
+[data-theme="tokyo"] .btn-convert-primary {
+  background: linear-gradient(135deg, #7dcfff 0%, #bb9af7 100%);
+  box-shadow: 0 0 22px rgba(125, 207, 255, 0.65), 0 0 40px rgba(187, 154, 247, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #040508;
+  font-weight: 800;
+}
+[data-theme="tokyo"] .tab-btn.active {
+  border: 1px solid #7dcfff;
+  box-shadow: 0 0 12px rgba(125, 207, 255, 0.4);
+}
+[data-theme="tokyo"] .mode-pill-btn.active {
+  background: linear-gradient(135deg, #7dcfff 0%, #bb9af7 100%);
+  color: #040508;
+  font-weight: 800;
+  box-shadow: 0 0 14px rgba(125, 207, 255, 0.6);
+}
+
+/* 4. ❄️ Nordic Glacial Glass */
+[data-theme="nord"] .top-nav,
+[data-theme="nord"] .wb-card,
+[data-theme="nord"] .workspace-card {
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(136, 192, 208, 0.28);
+}
+[data-theme="nord"] .btn-convert-primary {
+  background: linear-gradient(135deg, #88c0d0 0%, #5e81ac 100%);
+  box-shadow: 0 6px 20px rgba(136, 192, 208, 0.35);
+}
+
+/* 5. 🍂 Gruvbox Retro Terminal */
+[data-theme="gruvbox"] .brand-name {
+  color: #fabd2f;
+  background: none;
+  -webkit-text-fill-color: #fabd2f;
+}
+[data-theme="gruvbox"] .step-num {
+  border: 1px solid #fabd2f;
+  color: #fabd2f;
+  background: rgba(250, 189, 47, 0.15);
+}
+[data-theme="gruvbox"] .btn-convert-primary {
+  background: linear-gradient(135deg, #fabd2f 0%, #fe8019 100%);
+  color: #1d2021;
+  font-weight: 800;
+  border: 2px solid #fabd2f;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
+}
+[data-theme="gruvbox"] .btn-convert-primary:enabled:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.8);
+}
+[data-theme="gruvbox"] .btn-convert-primary:enabled:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.9);
+}
+
+/* 6. ☀️ Apple Cupertino Clean Light */
 [data-theme="light"] .workbench-card, 
 [data-theme="light"] .wb-card, 
 [data-theme="light"] .top-nav {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="light"] .preview-table th {
@@ -2447,6 +2618,12 @@ select option {
 [data-theme="light"] .visual-viewport {
   background: #f1f5f9;
 }
+
+[data-theme="light"] .btn-convert-primary {
+  background: linear-gradient(135deg, #0071e3 0%, #0284c7 100%);
+  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+}
+
 
 
 

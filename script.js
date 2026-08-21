@@ -1160,6 +1160,7 @@ const themeNameMap = {
   catppuccin: '🌸 拿铁摩卡',
   tokyo: '⚡ 东京赛博',
   nord: '❄️ 极地极简',
+  gruvbox: '🍂 复古极客',
   light: '☀️ 晨曦明亮'
 };
 
