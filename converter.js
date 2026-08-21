@@ -155,18 +155,61 @@ const FormatParsers = {
     return { data, pages, sections: pages.map(p => ({ title: `第 ${p.pageNum} 页`, points: p.lines })), rawText: fullTextList.join('\n\n'), docType: 'pdf' };
   },
 
-  // 5. JSON / JSONL / CSV / 文本解析
+  // 5. JSON / JSONL / CSV / 文本解析 (具备工业级自动容错自愈引擎)
   json: async (file) => {
     const text = await file.text();
-    let parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch (e) {
-      throw new Error(`JSON 解析错误: ${e.message}`);
-    }
-    let rawData = Array.isArray(parsed) ? parsed : (typeof parsed === 'object' && parsed !== null ? [parsed] : null);
-    if (!rawData) throw new Error('JSON 格式无效，必须为数组或对象');
+    let rawData = null;
 
+    // 通道 1: 标准 JSON 解析
+    try {
+      const parsed = JSON.parse(text);
+      rawData = Array.isArray(parsed) ? parsed : (typeof parsed === 'object' && parsed !== null ? [parsed] : null);
+    } catch (e) {
+      // 通道 2: 智能自愈嗅探 - 很多大数据集/AI训练集将 JSONL (按行存储的独立对象) 命名为 .json
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length > 1) {
+        const candidateData = [];
+        let successCount = 0;
+        for (let i = 0; i < lines.length; i++) {
+          try {
+            const parsedLine = JSON.parse(lines[i]);
+            candidateData.push(parsedLine);
+            successCount++;
+          } catch (err) {
+            // 忽略偶尔出现的空行或注释行
+          }
+        }
+        if (successCount > 0 && candidateData.length >= lines.length * 0.7) {
+          rawData = candidateData;
+        }
+      }
+
+      // 通道 3: 智能自愈嗅探 - 多个连续 JSON 对象无外层方括号 (例如 {...}\n{...} 或 {...},{...})
+      if (!rawData) {
+        try {
+          const trimmed = text.trim().replace(/,\s*$/, ''); // 移除末尾多余逗号
+          const wrapped = trimmed.startsWith('[') && trimmed.endsWith(']')
+            ? trimmed
+            : `[${trimmed.replace(/}\s*\{/g, '},{')}]`;
+          const parsedWrapped = JSON.parse(wrapped);
+          if (Array.isArray(parsedWrapped)) {
+            rawData = parsedWrapped;
+          }
+        } catch (err2) {
+          // 容错失败
+        }
+      }
+
+      if (!rawData) {
+        throw new Error(`JSON 解析错误: ${e.message}（已尝试智能行记录自愈，但仍存在严重语法损坏）`);
+      }
+    }
+
+    if (!rawData || rawData.length === 0) {
+      throw new Error('JSON 文件中未找到有效数据或对象记录');
+    }
+
+    // 归一化处理纯值数组
     const data = rawData.map(item => {
       if (item !== null && typeof item === 'object') return item;
       return { '值': item };
@@ -174,17 +217,48 @@ const FormatParsers = {
 
     return { data, rawText: text, docType: 'table' };
   },
+
   jsonl: async (file) => {
     const text = await file.text();
+    let rawData = null;
+
+    // 通道 1: 尝试标准 JSONL 逐行解析
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-    if (lines.length === 0) throw new Error('JSONL 文件内容为空');
-    const data = lines.map((line, idx) => {
-      try {
-        return JSON.parse(line);
-      } catch (err) {
-        throw new Error(`JSONL 第 ${idx + 1} 行解析失败: ${err.message}`);
+    if (lines.length > 0) {
+      const candidate = [];
+      let successCount = 0;
+      for (let idx = 0; idx < lines.length; idx++) {
+        try {
+          candidate.push(JSON.parse(lines[idx]));
+          successCount++;
+        } catch (err) {
+          // 容错单行
+        }
       }
+      if (successCount > 0 && candidate.length >= lines.length * 0.7) {
+        rawData = candidate;
+      }
+    }
+
+    // 通道 2: 自愈 - 如果用户把标准 JSON 数组文件拖到了 JSONL 解析器
+    if (!rawData) {
+      try {
+        const parsed = JSON.parse(text);
+        rawData = Array.isArray(parsed) ? parsed : (typeof parsed === 'object' && parsed !== null ? [parsed] : null);
+      } catch (e) {
+        // 忽略
+      }
+    }
+
+    if (!rawData || rawData.length === 0) {
+      throw new Error('JSONL 文件内容为空或存在多行解析失败');
+    }
+
+    const data = rawData.map(item => {
+      if (item !== null && typeof item === 'object') return item;
+      return { '值': item };
     });
+
     return { data, rawText: text, docType: 'table' };
   },
   csv: async (file) => {
