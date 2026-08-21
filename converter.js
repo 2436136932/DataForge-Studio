@@ -348,10 +348,19 @@ const FormatGenerators = {
       });
       y += 8;
 
-      data.slice(0, 100).forEach((row, rowIdx) => {
+      data.forEach((row, rowIdx) => {
         if (y > pageHeight - 20) {
           doc.addPage();
           y = 20;
+          // 新页重绘表头
+          doc.setFillColor(241, 245, 249);
+          doc.rect(margin, y - 4, contentWidth, 7, 'F');
+          doc.setFontSize(9);
+          doc.setTextColor(30, 41, 59);
+          keys.forEach((k, colIdx) => {
+            doc.text(String(k).substring(0, 15), margin + colIdx * colWidth + 1, y);
+          });
+          y += 8;
         }
         if (rowIdx % 2 === 1) {
           doc.setFillColor(248, 250, 252);

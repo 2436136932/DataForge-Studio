@@ -463,8 +463,30 @@ srcFormatSelect.addEventListener('change', () => {
   }
 });
 
-// 目标格式切换或导出选项变化监听：实时重算目标格式预览
+// 目标格式切换或导出选项变化监听：实时重算目标格式预览与选项有效性
+function updateOptionAvailability() {
+  const targetFmt = targetFormatSelect.value;
+
+  if (optPrettyJson) {
+    const wrap = optPrettyJson.closest('.toggle-item') || optPrettyJson.parentElement;
+    if (wrap) wrap.style.opacity = (targetFmt === 'json' || targetFmt === 'jsonl') ? '1' : '0.45';
+  }
+  if (optCsvBom) {
+    const wrap = optCsvBom.closest('.toggle-item') || optCsvBom.parentElement;
+    if (wrap) wrap.style.opacity = (targetFmt === 'csv') ? '1' : '0.45';
+  }
+  if (optDocHeaders) {
+    const wrap = optDocHeaders.closest('.toggle-item') || optDocHeaders.parentElement;
+    if (wrap) wrap.style.opacity = (['pdf', 'docx', 'md', 'html'].includes(targetFmt)) ? '1' : '0.45';
+  }
+  if (optPptxTheme) {
+    const wrap = optPptxTheme.closest('.toggle-item') || optPptxTheme.parentElement;
+    if (wrap) wrap.style.opacity = (targetFmt === 'pptx') ? '1' : '0.45';
+  }
+}
+
 function onTargetFormatOrOptionChange() {
+  updateOptionAvailability();
   if (parsedDataset && parsedDataset.length > 0) {
     updateTargetPreview();
   }
@@ -476,7 +498,10 @@ optCsvBom.addEventListener('change', onTargetFormatOrOptionChange);
 if (optDocHeaders) optDocHeaders.addEventListener('change', onTargetFormatOrOptionChange);
 if (optPptxTheme) optPptxTheme.addEventListener('change', onTargetFormatOrOptionChange);
 
-// Tab 切换逻辑
+// 页面初始化时执行一次选项高亮
+updateOptionAvailability();
+
+// Tab 切换逻辑 (保持分屏胶囊与表格过滤条的整洁联动)
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -486,6 +511,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const targetTab = document.getElementById(btn.dataset.tab);
     if (targetTab) {
       targetTab.style.display = 'flex';
+    }
+
+    // 仅在「格式对比与代码」视图下展示三模切换胶囊
+    if (btn.dataset.tab === 'tabCode') {
+      if (previewModeGroup) previewModeGroup.style.display = 'flex';
+    } else {
+      if (previewModeGroup) previewModeGroup.style.display = 'none';
     }
 
     if (btn.dataset.tab === 'tabTable' && parsedDataset.length > 0) {
