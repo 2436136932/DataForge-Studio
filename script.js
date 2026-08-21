@@ -192,7 +192,7 @@ function setStatus(msg, type = '') {
   statusDiv.className = 'status-banner' + (type ? ' ' + type : '');
 }
 
-// 更新目标格式下拉菜单 (按文档/数据进行 optgroup 分组)
+// 更新目标格式下拉菜单 (按数据/文档进行 optgroup 分组)
 function updateTargetOptions() {
   const currentSrc = srcFormatSelect.value;
   const currentTarget = targetFormatSelect.value;
@@ -200,35 +200,19 @@ function updateTargetOptions() {
   fileInput.accept = formatAcceptMap[currentSrc] || '';
   dropHint.textContent = formatHints[currentSrc] || '';
 
-  const docFormats = ['pdf', 'pptx', 'docx', 'md', 'txt', 'html'];
-  const dataFormats = ['jsonl', 'json', 'xlsx', 'csv'];
+  const dataFormats = ['xlsx', 'xls', 'json', 'jsonl', 'csv'];
+  const docFormats = ['docx', 'pptx', 'pdf', 'md', 'txt', 'html'];
 
   targetFormatSelect.innerHTML = '';
 
-  // 1. 文档分组
-  const optGroupDoc = document.createElement('optgroup');
-  optGroupDoc.label = '📄 文档与演示文稿';
-  docFormats.forEach(fmt => {
-    if (fmt !== currentSrc) {
-      const opt = document.createElement('option');
-      opt.value = fmt;
-      opt.textContent = formatLabels[fmt];
-      optGroupDoc.appendChild(opt);
-    }
-  });
-  if (optGroupDoc.children.length > 0) {
-    targetFormatSelect.appendChild(optGroupDoc);
-  }
-
-  // 2. 数据分组
+  // 1. 数据与表格分组 (置顶)
   const optGroupData = document.createElement('optgroup');
-  optGroupData.label = '📊 数据与表格';
+  optGroupData.label = '📊 表格与数据';
   dataFormats.forEach(fmt => {
-    const isSame = (currentSrc === fmt) || (currentSrc === 'xls' && fmt === 'xlsx');
-    if (!isSame) {
+    if (fmt !== currentSrc || fmt === 'xlsx') {
       const opt = document.createElement('option');
       opt.value = fmt;
-      opt.textContent = formatLabels[fmt];
+      opt.textContent = formatLabels[fmt] || fmt.toUpperCase();
       optGroupData.appendChild(opt);
     }
   });
@@ -236,19 +220,34 @@ function updateTargetOptions() {
     targetFormatSelect.appendChild(optGroupData);
   }
 
+  // 2. 文档与演示文稿分组
+  const optGroupDoc = document.createElement('optgroup');
+  optGroupDoc.label = '📄 文档与演示文稿';
+  docFormats.forEach(fmt => {
+    if (fmt !== currentSrc) {
+      const opt = document.createElement('option');
+      opt.value = fmt;
+      opt.textContent = formatLabels[fmt] || fmt.toUpperCase();
+      optGroupDoc.appendChild(opt);
+    }
+  });
+  if (optGroupDoc.children.length > 0) {
+    targetFormatSelect.appendChild(optGroupDoc);
+  }
+
   // 保持原有选择或智能推荐默认
   if (currentTarget && targetFormatSelect.querySelector(`option[value="${currentTarget}"]`)) {
     targetFormatSelect.value = currentTarget;
   } else {
     // 默认推荐
-    if (['xlsx', 'xls', 'json', 'csv'].includes(currentSrc)) {
-      targetFormatSelect.value = 'jsonl';
-    } else if (currentSrc === 'docx') {
-      targetFormatSelect.value = 'pdf';
-    } else if (currentSrc === 'pptx') {
-      targetFormatSelect.value = 'pdf';
-    } else if (currentSrc === 'pdf') {
+    if (currentSrc === 'xlsx' || currentSrc === 'xls') {
       targetFormatSelect.value = 'docx';
+    } else if (currentSrc === 'docx' || currentSrc === 'pdf' || currentSrc === 'pptx') {
+      targetFormatSelect.value = 'xlsx';
+    } else if (currentSrc === 'json' || currentSrc === 'jsonl' || currentSrc === 'csv') {
+      targetFormatSelect.value = 'xlsx';
+    } else {
+      targetFormatSelect.value = 'xlsx';
     }
   }
 }
