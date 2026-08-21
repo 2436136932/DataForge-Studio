@@ -239,10 +239,111 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   🌌 全屏动态氛围光影与网格矩阵背景系统 (Ambient Mesh & Grid System)
+   ========================================================================== */
+.ambient-bg-system {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.orb-primary {
+  width: 650px;
+  height: 650px;
+  background: var(--primary);
+  opacity: 0.22;
+  top: -150px;
+  left: -150px;
+  animation: float-mesh-1 20s ease-in-out infinite alternate;
+}
+
+.orb-secondary {
+  width: 550px;
+  height: 550px;
+  background: var(--step-color);
+  opacity: 0.18;
+  bottom: -100px;
+  right: -100px;
+  animation: float-mesh-2 24s ease-in-out infinite alternate;
+}
+
+.orb-tertiary {
+  width: 480px;
+  height: 480px;
+  background: var(--primary-glow);
+  opacity: 0.15;
+  top: 35%;
+  left: 45%;
+  animation: float-mesh-3 18s ease-in-out infinite alternate;
+}
+
+.ambient-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border-subtle) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 40%, transparent 85%);
+  opacity: 0.75;
+}
+
+.ambient-aurora-sweep {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, var(--primary-subtle) 0%, transparent 70%);
+  opacity: 0.35;
+  animation: aurora-drift 28s linear infinite alternate;
+}
+
+@keyframes float-mesh-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(120px, 80px) scale(1.15); }
+  100% { transform: translate(60px, 140px) scale(0.9); }
+}
+
+@keyframes float-mesh-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-100px, -90px) scale(1.2); }
+  100% { transform: translate(-50px, -130px) scale(0.85); }
+}
+
+@keyframes float-mesh-3 {
+  0% { transform: translate(0, 0) scale(0.9); }
+  50% { transform: translate(-80px, 70px) scale(1.25); }
+  100% { transform: translate(90px, -60px) scale(1); }
+}
+
+@keyframes aurora-drift {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 /* 整体容器 */
 .workbench-app {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
