@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataForge Studio - 通用数据转换工作台</title>
+    <meta name="description" content="专业级通用数据格式转换工作台，支持 Excel、JSON、JSONL、CSV 自由互转与实时数据预览，100% 浏览器本地安全解析。" />
+    <link rel="stylesheet" href="style.css" />
+    <!-- 核心本地解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body>
+    <div class="workbench-app">
+        <!-- 顶栏导航 -->
+        <header class="top-nav">
+            <div class="brand">
+                <div class="brand-icon">⚡</div>
+                <div class="brand-text">
+                    <span class="brand-name">DataForge Studio</span>
+                    <span class="brand-subtitle">全能文档与数据转换工作台 (Word / PPT / PDF / Excel / JSON)</span>
+                </div>
+                <span class="badge-tag">v3.0 全能旗舰版</span>
+            </div>
+            <div class="nav-badges">
+                <span class="nav-pill"><span class="dot green"></span> 本地引擎运转正常</span>
+                <span class="nav-pill">🔒 100% 离线沙箱隐私保护</span>
+                <span class="nav-pill">⚡ 多文档与数据秒级互转</span>
+            </div>
+        </header>
+
+        <!-- 工作台主体 -->
+        <main class="workbench-layout">
+            <!-- 左侧控制台 -->
+            <aside class="console-panel">
+                <!-- 卡片 1: 格式流转设置 -->
+                <div class="wb-card">
+                    <div class="card-header">
+                        <span class="step-num">01</span>
+                        <span class="card-title">格式流转配置</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="pipeline-grid">
+                            <div class="field-item">
+                                <label for="srcFormat">转换前格式 (源)</label>
+                                <div class="select-wrapper">
+                                    <select id="srcFormat">
+                                        <optgroup label="📄 文档与演示文稿">
+                                            <option value="docx">Word 文档 (.docx)</option>
+                                            <option value="pptx">PowerPoint 幻灯片 (.pptx)</option>
+                                            <option value="pdf">PDF 文档 (.pdf)</option>
+                                            <option value="md">Markdown 文档 (.md)</option>
+                                            <option value="txt">纯文本 (.txt)</option>
+                                            <option value="html">HTML 网页 (.html)</option>
+                                        </optgroup>
+                                        <optgroup label="📊 数据与表格">
+                                            <option value="xlsx" selected>Excel 工作簿 (.xlsx)</option>
+                                            <option value="xls">Excel 97-2003 (.xls)</option>
+                                            <option value="json">JSON 数据 (.json)</option>
+                                            <option value="jsonl">JSONL 行记录 (.jsonl)</option>
+                                            <option value="csv">CSV 逗号分隔 (.csv)</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button id="swapFormatBtn" class="btn-swap" title="交换转换方向" type="button">⇄</button>
+
+                            <div class="field-item">
+                                <label for="targetFormat">转换为格式 (目标)</label>
+                                <div class="select-wrapper">
+                                    <select id="targetFormat">
+                                        <optgroup label="📄 文档与演示文稿">
+                                            <option value="pdf" selected>PDF 导出文档 (.pdf)</option>
+                                            <option value="pptx">PowerPoint 幻灯片 (.pptx)</option>
+                                            <option value="docx">Word 文档 (.docx)</option>
+                                            <option value="md">Markdown 文档 (.md)</option>
+                                            <option value="txt">纯文本 (.txt)</option>
+                                            <option value="html">HTML 网页 (.html)</option>
+                                        </optgroup>
+                                        <optgroup label="📊 数据与表格">
+                                            <option value="jsonl">JSONL (.jsonl)</option>
+                                            <option value="json">JSON (.json)</option>
+                                            <option value="xlsx">Excel (.xlsx)</option>
+                                            <option value="csv">CSV (.csv)</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 2: 文件导入 -->
+                <div class="wb-card">
+                    <div class="card-header">
+                        <span class="step-num">02</span>
+                        <span class="card-title">数据与文档源导入</span>
+                        <span id="fileBadge" class="header-badge" style="display:none;">已就绪</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" id="fileInput" accept=".xlsx,.xls,.docx,.pptx,.pdf,.json,.jsonl,.csv,.md,.txt,.html" />
+                            <div class="drop-prompt" id="dropPrompt">
+                                <div class="drop-icon-anim">📁</div>
+                                <div class="drop-primary-text">点击选择 或 拖拽文件至此处</div>
+                                <div class="drop-secondary-text" id="dropHint">支持 Word、PPT、PDF、Excel、JSON、CSV 等</div>
+                            </div>
+                            <div class="file-loaded-card" id="fileLoadedCard" style="display:none;">
+                                <div class="file-card-icon" id="fileCardIcon">📄</div>
+                                <div class="file-card-details">
+                                    <div class="file-card-name" id="fileNameDisplay">--</div>
+                                    <div class="file-card-meta" id="fileMetaDisplay">--</div>
+                                </div>
+                                <button type="button" class="btn-remove-file" id="removeFileBtn" title="移除文件">✕</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 3: 导出选项 -->
+                <div class="wb-card">
+                    <div class="card-header">
+                        <span class="step-num">03</span>
+                        <span class="card-title">高级导出与排版设置</span>
+                    </div>
+                    <div class="card-body options-grid">
+                        <label class="toggle-control">
+                            <input type="checkbox" id="optPrettyJson" checked />
+                            <span class="toggle-track"></span>
+                            <span class="toggle-label">JSON 美化缩进 (换行对齐)</span>
+                        </label>
+                        <label class="toggle-control">
+                            <input type="checkbox" id="optCsvBom" checked />
+                            <span class="toggle-track"></span>
+                            <span class="toggle-label">CSV 包含 UTF-8 BOM (防乱码)</span>
+                        </label>
+                        <label class="toggle-control">
+                            <input type="checkbox" id="optDocHeaders" checked />
+                            <span class="toggle-track"></span>
+                            <span class="toggle-label">PDF/文档 包含页眉页码与章节标记</span>
+                        </label>
+                        <label class="toggle-control">
+                            <input type="checkbox" id="optPptxTheme" checked />
+                            <span class="toggle-track"></span>
+                            <span class="toggle-label">PPTX 应用现代深色商务幻灯片模板</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 卡片 4: 转换与执行 -->
+                <div class="wb-card action-card">
+                    <button id="convertBtn" class="btn-convert-primary" disabled>
+                        <span class="btn-icon">🚀</span>
+                        <span class="btn-text">开始转换并导出</span>
+                    </button>
+                    <div id="status" class="status-banner"></div>
+                </div>
+
+                <!-- 卡片 5: 本次转换历史 -->
+                <div class="wb-card history-card" id="historyCard" style="display:none;">
+                    <div class="card-header">
+                        <span class="card-title">📦 本次导出记录</span>
+                        <button type="button" class="btn-clear-history" id="clearHistoryBtn">清空</button>
+                    </div>
+                    <div class="card-body">
+                        <ul class="history-list" id="historyList"></ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧实时预览与数据工作区 -->
+            <section class="preview-panel">
+                <div class="workspace-card">
+                    <!-- 工作区顶栏工具条 -->
+                    <div class="workspace-header">
+                        <div class="view-tabs">
+                            <button type="button" class="tab-btn active" data-tab="tabCode">
+                                <span class="tab-icon">💻</span> 格式对比与代码
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="tabTable">
+                                <span class="tab-icon">📊</span> 表格视图
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="tabSlide">
+                                <span class="tab-icon">🖼️</span> 幻灯片/分页卡片
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="tabSchema">
+                                <span class="tab-icon">📑</span> 结构与大纲
+                            </button>
+                        </div>
+
+                        <!-- 视角切换器 (转换前 / 转换后 / 双栏对照) -->
+                        <div class="preview-mode-group" id="previewModeGroup">
+                            <button type="button" class="mode-pill-btn" data-mode="source" id="modeSourceBtn" title="仅查看导入的源格式数据">
+                                <span class="pill-dot blue"></span> 转换前 (源)
+                            </button>
+                            <button type="button" class="mode-pill-btn" data-mode="target" id="modeTargetBtn" title="仅查看实时编译的目标格式预览">
+                                <span class="pill-dot green"></span> 转换后 (目标)
+                            </button>
+                            <button type="button" class="mode-pill-btn active" data-mode="split" id="modeSplitBtn" title="左右双栏实时对照">
+                                <span class="pill-dot purple"></span> ⚡ 双栏对照
+                            </button>
+                        </div>
+
+                        <div class="workspace-stats" id="workspaceStats">
+                            <span class="stat-tag"><b id="statRows">0</b> 项/页</span>
+                            <span class="stat-tag"><b id="statCols">0</b> 个要素</span>
+                            <span class="stat-tag"><b id="statSize">0 B</b></span>
+                        </div>
+                    </div>
+
+                    <!-- 搜索过滤条 (仅在表格视图有效) -->
+                    <div class="table-filter-bar" id="tableFilterBar" style="display:none;">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="tableSearchInput" placeholder="在预览数据中快速检索..." />
+                        <span class="filter-tip" id="filterTip">显示前 100 行预览</span>
+                    </div>
+
+                    <!-- 工作区视图内容容器 -->
+                    <div class="workspace-body">
+                        <!-- 空状态提示 -->
+                        <div class="empty-state" id="emptyState">
+                            <div class="empty-icon">📁</div>
+                            <h3>暂无数据或文档预览</h3>
+                            <p>在左侧选择 Word、PPT、PDF、Excel 或 JSON 文件导入，即可在此实时查看多格式转换、大纲排版与双栏对照。</p>
+                            <div class="flow-pills">
+                                <span>1. 选定目标格式</span>
+                                <span>➜</span>
+                                <span>2. 导入文件</span>
+                                <span>➜</span>
+                                <span>3. 检查前后对照</span>
+                                <span>➜</span>
+                                <span>4. 一键导出</span>
+                            </div>
+                        </div>
+
+                        <!-- 视图 1: 表格视图 -->
+                        <div class="tab-content" id="tabTable" style="display:none;">
+                            <div class="table-scroll-container" id="tableContainer">
+                                <table class="preview-table" id="previewTable">
+                                    <thead id="tableHead"></thead>
+                                    <tbody id="tableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 视图 2: 代码与前后对比视图 -->
+                        <div class="tab-content active" id="tabCode" style="display:none;">
+                            <div class="code-split-wrapper view-mode-split" id="codeSplitWrapper">
+                                <!-- 左侧：转换前 (源格式) -->
+                                <div class="code-panel-box panel-source" id="sourceCodePanel">
+                                    <div class="code-panel-header">
+                                        <div class="panel-tag-group">
+                                            <span class="panel-role-badge role-src">📥 转换前 (源)</span>
+                                            <span class="code-lang-tag tag-src" id="sourceFormatTag">XLSX</span>
+                                        </div>
+                                        <div class="panel-actions">
+                                            <span class="panel-meta-text" id="sourceMetaTag">--</span>
+                                            <button type="button" class="btn-copy-mini" id="copySourceCodeBtn" title="复制转换前数据">📋 复制源数据</button>
+                                        </div>
+                                    </div>
+                                    <div class="code-scroll-area">
+                                        <pre class="code-block"><code id="sourceCodeContent">// 暂无源数据</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- 中间分界流动指示器 -->
+                                <div class="split-divider" id="splitDivider">
+                                    <div class="split-divider-pill">
+                                        <span class="divider-arrow">➔</span>
+                                        <span class="divider-text">转换</span>
+                                    </div>
+                                </div>
+
+                                <!-- 右侧：转换后 (目标格式实时预览) -->
+                                <div class="code-panel-box panel-target" id="targetCodePanel">
+                                    <div class="code-panel-header">
+                                        <div class="panel-tag-group">
+                                            <span class="panel-role-badge role-tgt">📤 转换后 (目标)</span>
+                                            <span class="code-lang-tag tag-tgt" id="targetFormatTag">PDF (实时预览)</span>
+                                        </div>
+                                        <div class="panel-actions">
+                                            <span class="panel-meta-text" id="targetMetaTag">--</span>
+                                            <button type="button" class="btn-copy-mini btn-copy-highlight" id="copyTargetCodeBtn" title="复制转换后目标格式数据">⚡ 复制目标数据</button>
+                                        </div>
+                                    </div>
+                                    <div class="code-scroll-area">
+                                        <pre class="code-block"><code id="targetCodeContent">// 暂无目标数据</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 视图 3: 幻灯片与分页卡片视图 -->
+                        <div class="tab-content" id="tabSlide" style="display:none;">
+                            <div class="slide-deck-wrapper">
+                                <div class="slide-deck-toolbar">
+                                    <span class="slide-deck-badge" id="slideDeckBadge">📄 幻灯片与页面排版</span>
+                                    <span class="slide-deck-count" id="slideDeckCount">共 0 页</span>
+                                </div>
+                                <div class="slide-cards-grid" id="slideCardsGrid">
+                                    <!-- 动态卡片 -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 视图 4: 结构与大纲分析 -->
+                        <div class="tab-content" id="tabSchema" style="display:none;">
+                            <div class="schema-wrapper" id="schemaContainer">
+                                <table class="schema-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>要素 / 字段 / 章节</th>
+                                            <th>推断类型</th>
+                                            <th>样本与内容预览</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="schemaBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 工作台页脚 -->
+        <footer class="workbench-footer">
+            <span>🛡️ 数据安全承诺：所有数据均在浏览器内核本地沙箱解析，不向任何第三方服务器发送数据。</span>
+            <span>DataForge Universal Data Workbench</span>
+        </footer>
+    </div>
+
+    <script src="converter.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
