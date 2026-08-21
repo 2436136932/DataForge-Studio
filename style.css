@@ -1128,30 +1128,31 @@ body {
   background: #090d16;
   max-height: calc(100vh - 280px);
   overflow: hidden;
-  padding: 0.85rem;
+  padding: 0.9rem;
 }
 
 .slide-deck-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.4rem 0.85rem;
-  background: rgba(17, 24, 39, 0.8);
+  padding: 0.5rem 1rem;
+  background: rgba(17, 24, 39, 0.85);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .slide-deck-badge {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #38bdf8;
   letter-spacing: 0.02em;
 }
 
 .slide-deck-count {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  color: #94a3b8;
   font-family: var(--font-mono);
 }
 
@@ -1159,63 +1160,64 @@ body {
   flex: 1;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.85rem;
-  padding-right: 0.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.15rem;
+  padding: 0.25rem 0.5rem 1rem 0.25rem;
 }
 
+/* 卡片容器 */
 .slide-card-item {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  padding: 0.85rem;
+  background: #111a2e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  gap: 0.75rem;
+  min-height: 220px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5);
   position: relative;
   overflow: hidden;
 }
 
-.slide-card-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #38bdf8, #818cf8);
-  opacity: 0.8;
+.slide-card-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.65), 0 0 16px rgba(99, 102, 241, 0.2);
 }
 
-.slide-card-item:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
-}
+/* 顶部类型色条与药丸 */
+.slide-card-item.slide-type-ppt { border-top: 3px solid #f97316; }
+.slide-card-item.slide-type-pdf { border-top: 3px solid #ef4444; }
+.slide-card-item.slide-type-doc { border-top: 3px solid #38bdf8; }
+.slide-card-item.slide-type-data { border-top: 3px solid #6366f1; }
 
 .slide-card-top {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
 }
 
 .slide-card-pill {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 800;
   font-family: var(--font-mono);
-  background: rgba(56, 189, 248, 0.18);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  padding: 0.12rem 0.45rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
   white-space: nowrap;
 }
 
+.pill-ppt { background: rgba(249, 115, 22, 0.18); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.4); }
+.pill-pdf { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+.pill-doc { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.pill-data { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.45); }
+
 .slide-card-heading {
-  font-size: 0.85rem;
-  color: #f1f5f9;
+  font-size: 0.88rem;
+  color: #ffffff;
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1223,18 +1225,111 @@ body {
   flex: 1;
 }
 
+/* 卡片主体内容排版 */
 .slide-card-body {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  line-height: 1.5;
-  color: #94a3b8;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 0.6rem 0.75rem;
+  flex: 1;
+  background: rgba(10, 15, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  max-height: 140px;
+  padding: 0.75rem 0.85rem;
   overflow-y: auto;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 列表与段落排版 */
+.slide-bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.slide-bullet-list li {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #e2e8f0;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.slide-bullet-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+.slide-doc-para {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin: 0;
   white-space: pre-wrap;
+}
+
+.slide-empty-hint {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+/* 数据记录微缩卡片 */
+.mini-record-box {
+  background: rgba(22, 30, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  margin-bottom: 0.35rem;
+}
+
+.mini-record-box:last-child {
+  margin-bottom: 0;
+}
+
+.mini-record-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mini-record-tag {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.mini-field-item {
+  font-size: 0.76rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-field-item .field-k {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.mini-field-item .field-v {
+  color: #f8fafc;
+  font-weight: 500;
 }
 
 /* 下拉菜单分组美化 */

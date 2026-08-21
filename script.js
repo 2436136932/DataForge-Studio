@@ -463,70 +463,156 @@ function updateTargetPreview() {
   targetCodeContent.textContent = preview.text;
 }
 
-// 渲染幻灯片与页面卡片视图
+// 渲染幻灯片与页面卡片视图 (富排版与高对比度卡片)
 function renderSlideCardsView(result) {
   slideCardsGrid.innerHTML = '';
 
-  let cards = [];
   if (result.slides && result.slides.length > 0) {
     slideDeckBadge.textContent = '📙 PowerPoint 幻灯片大纲视图';
     slideDeckCount.textContent = `共 ${result.slides.length} 页幻灯片`;
-    cards = result.slides.map(s => ({
-      badge: `SLIDE ${s.index}`,
-      title: s.title,
-      content: s.points.join('\n• ') ? `• ${s.points.join('\n• ')}` : '（空白幻灯片）'
-    }));
+
+    result.slides.forEach(s => {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'slide-card-item slide-type-ppt';
+
+      const topEl = document.createElement('div');
+      topEl.className = 'slide-card-top';
+      topEl.innerHTML = `
+        <span class="slide-card-pill pill-ppt">SLIDE ${s.index}</span>
+        <h4 class="slide-card-heading" title="${s.title}">${s.title}</h4>
+      `;
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'slide-card-body';
+
+      if (s.points && s.points.length > 0) {
+        const ul = document.createElement('ul');
+        ul.className = 'slide-bullet-list';
+        s.points.forEach(pt => {
+          const li = document.createElement('li');
+          li.textContent = pt;
+          ul.appendChild(li);
+        });
+        bodyEl.appendChild(ul);
+      } else {
+        bodyEl.innerHTML = `<div class="slide-empty-hint">${s.rawText || '（单张封面或空白幻灯片）'}</div>`;
+      }
+
+      cardEl.appendChild(topEl);
+      cardEl.appendChild(bodyEl);
+      slideCardsGrid.appendChild(cardEl);
+    });
+
   } else if (result.pages && result.pages.length > 0) {
-    slideDeckBadge.textContent = '📕 PDF 页面解析视图';
+    slideDeckBadge.textContent = '📕 PDF 页面逐页解析视图';
     slideDeckCount.textContent = `共 ${result.pages.length} 页 PDF`;
-    cards = result.pages.map(p => ({
-      badge: `PAGE ${p.pageNum}`,
-      title: `第 ${p.pageNum} 页内容`,
-      content: p.text || '（页面无文字）'
-    }));
+
+    result.pages.forEach(p => {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'slide-card-item slide-type-pdf';
+
+      const topEl = document.createElement('div');
+      topEl.className = 'slide-card-top';
+      topEl.innerHTML = `
+        <span class="slide-card-pill pill-pdf">PAGE ${p.pageNum}</span>
+        <h4 class="slide-card-heading">第 ${p.pageNum} 页文本流</h4>
+      `;
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'slide-card-body';
+      bodyEl.innerHTML = `<p class="slide-doc-para">${p.text || '（页面无可见文本）'}</p>`;
+
+      cardEl.appendChild(topEl);
+      cardEl.appendChild(bodyEl);
+      slideCardsGrid.appendChild(cardEl);
+    });
+
   } else if (result.sections && result.sections.length > 0) {
-    slideDeckBadge.textContent = '📘 Word / 文档章节大纲视图';
-    slideDeckCount.textContent = `共 ${result.sections.length} 个章节`;
-    cards = result.sections.map((sec, idx) => ({
-      badge: `SEC ${idx + 1}`,
-      title: sec.title || `段落 #${idx + 1}`,
-      content: Array.isArray(sec.points) ? sec.points.join('\n') : (sec.text || '')
-    }));
+    slideDeckBadge.textContent = '📘 Word / 文档章节排版视图';
+    slideDeckCount.textContent = `共 ${result.sections.length} 个章节/段落`;
+
+    result.sections.forEach((sec, idx) => {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'slide-card-item slide-type-doc';
+
+      const topEl = document.createElement('div');
+      topEl.className = 'slide-card-top';
+      topEl.innerHTML = `
+        <span class="slide-card-pill pill-doc">SEC ${idx + 1}</span>
+        <h4 class="slide-card-heading" title="${sec.title || `段落 #${idx + 1}`}">${sec.title || `段落 #${idx + 1}`}</h4>
+      `;
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'slide-card-body';
+
+      if (Array.isArray(sec.points) && sec.points.length > 0) {
+        const ul = document.createElement('ul');
+        ul.className = 'slide-bullet-list';
+        sec.points.forEach(pt => {
+          const li = document.createElement('li');
+          li.textContent = pt;
+          ul.appendChild(li);
+        });
+        bodyEl.appendChild(ul);
+      } else {
+        bodyEl.innerHTML = `<p class="slide-doc-para">${sec.text || sec.content || '（章节内容）'}</p>`;
+      }
+
+      cardEl.appendChild(topEl);
+      cardEl.appendChild(bodyEl);
+      slideCardsGrid.appendChild(cardEl);
+    });
+
   } else {
-    slideDeckBadge.textContent = '📊 数据卡片分组视图';
-    const chunkSize = 5;
-    const totalChunks = Math.min(Math.ceil(parsedDataset.length / chunkSize), 20);
-    slideDeckCount.textContent = `共 ${parsedDataset.length} 条记录 (抽样展示 ${totalChunks} 个卡片)`;
+    // 表格 / JSON / 数据集分组卡片展示
+    slideDeckBadge.textContent = '📊 数据卡片分组矩阵视图';
+    const chunkSize = 4;
+    const totalChunks = Math.min(Math.ceil(parsedDataset.length / chunkSize), 24);
+    slideDeckCount.textContent = `共 ${parsedDataset.length} 条记录 (抽样渲染前 ${totalChunks} 个精装卡片)`;
+
     for (let i = 0; i < totalChunks; i++) {
       const chunk = parsedDataset.slice(i * chunkSize, (i + 1) * chunkSize);
-      cards.push({
-        badge: `GROUP ${i + 1}`,
-        title: `记录 #${i * chunkSize + 1} - #${i * chunkSize + chunk.length}`,
-        content: chunk.map((r, ri) => `${i * chunkSize + ri + 1}. ` + Object.entries(r).slice(0, 3).map(([k, v]) => `${k}: ${v}`).join(' | ')).join('\n')
+      const cardEl = document.createElement('div');
+      cardEl.className = 'slide-card-item slide-type-data';
+
+      const topEl = document.createElement('div');
+      topEl.className = 'slide-card-top';
+      topEl.innerHTML = `
+        <span class="slide-card-pill pill-data">GROUP ${i + 1}</span>
+        <h4 class="slide-card-heading">记录 #${i * chunkSize + 1} - #${i * chunkSize + chunk.length}</h4>
+      `;
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'slide-card-body data-card-body';
+
+      chunk.forEach((row, rIdx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'mini-record-box';
+
+        const rowTitle = document.createElement('div');
+        rowTitle.className = 'mini-record-header';
+        rowTitle.innerHTML = `<span class="mini-record-tag">#${i * chunkSize + rIdx + 1}</span>`;
+
+        const pairs = Object.entries(row).slice(0, 4);
+        pairs.forEach(([k, v]) => {
+          const fieldSpan = document.createElement('span');
+          fieldSpan.className = 'mini-field-item';
+          const valStr = v === null || v === undefined ? 'null' : (typeof v === 'object' ? JSON.stringify(v) : String(v));
+          fieldSpan.innerHTML = `<b class="field-k">${k}:</b> <span class="field-v" title="${valStr}">${valStr}</span>`;
+          rowTitle.appendChild(fieldSpan);
+        });
+
+        rowDiv.appendChild(rowTitle);
+        bodyEl.appendChild(rowDiv);
       });
+
+      cardEl.appendChild(topEl);
+      cardEl.appendChild(bodyEl);
+      slideCardsGrid.appendChild(cardEl);
     }
   }
-
-  cards.forEach(card => {
-    const cardEl = document.createElement('div');
-    cardEl.className = 'slide-card-item';
-
-    const headerEl = document.createElement('div');
-    headerEl.className = 'slide-card-top';
-    headerEl.innerHTML = `
-      <span class="slide-card-pill">${card.badge}</span>
-      <h4 class="slide-card-heading" title="${card.title}">${card.title}</h4>
-    `;
-
-    const bodyEl = document.createElement('div');
-    bodyEl.className = 'slide-card-body';
-    bodyEl.textContent = card.content;
-
-    cardEl.appendChild(headerEl);
-    cardEl.appendChild(bodyEl);
-    slideCardsGrid.appendChild(cardEl);
-  });
 }
+
 
 // 渲染结构与大纲分析视图
 function renderSchemaView(data, keys) {
