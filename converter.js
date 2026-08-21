@@ -940,12 +940,48 @@ window.FileConverter = {
     }
 
     // ==========================================
-    // 5. 纯文本 / 代码类格式 (JSON / JSONL / CSV / MD / TXT)
+    // 5. HTML 网页仿真 (通过沙箱 iframe 100% 隔离 CSS，防止全局样式污染)
+    // ==========================================
+    if (format === 'html') {
+      const htmlCode = this.generatePreviewText(data, 'html', options, 100).text;
+      const safeSrcdoc = htmlCode.replace(/"/g, '&quot;');
+      return `
+        <div class="browser-sim-workspace">
+          <div class="browser-window-frame">
+            <div class="browser-top-bar">
+              <div class="browser-traffic-dots">
+                <span class="b-dot b-red"></span>
+                <span class="b-dot b-yellow"></span>
+                <span class="b-dot b-green"></span>
+              </div>
+              <div class="browser-address-bar">
+                <span class="browser-lock-icon">🔒</span>
+                <span class="browser-url-text">https://localhost/export_preview.html</span>
+              </div>
+              <span class="browser-tag">沙箱隔离渲染</span>
+            </div>
+            <div class="browser-iframe-wrapper">
+              <iframe class="browser-preview-iframe" srcdoc="${safeSrcdoc}" sandbox="allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 6. 纯文本 / 代码类格式 (JSON / JSONL / CSV / MD / TXT)
     // ==========================================
     const textGen = this.generatePreviewText(data, format, options, 60);
+    const escapedCode = String(textGen.text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
     return `
       <div class="code-viewer-container">
-        <pre class="code-block"><code class="language-${format}">${textGen.text}</code></pre>
+        <pre class="code-block"><code class="language-${format}">${escapedCode}</code></pre>
       </div>
     `;
   },
