@@ -1,13 +1,16 @@
 /* ==========================================================================
-   DataForge Studio - 专业级通用数据转换工作台样式系统
+   DataForge Studio - 全局多主题皮肤系统 (Multi-Theme Design Tokens)
    ========================================================================== */
 
-:root {
-  --bg-app: #090d16;
-  --bg-panel: #111827;
-  --bg-card: rgba(22, 30, 46, 0.85);
-  --bg-card-hover: rgba(30, 41, 62, 0.95);
-  --bg-input: #0f172a;
+/* 1. 🌌 默认旗舰：深空极光 (Linear Deep Aurora) */
+:root, [data-theme="aurora"] {
+  --bg-app: #080c16;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+  --bg-panel: #0e1626;
+  --bg-card: rgba(17, 24, 39, 0.82);
+  --bg-card-hover: rgba(26, 36, 56, 0.95);
+  --bg-input: #090e1a;
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: #6366f1;
   --text-main: #f8fafc;
@@ -16,6 +19,10 @@
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --accent-cyan: #38bdf8;
+  --accent-purple: #a855f7;
+  --accent-amber: #f59e0b;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -23,22 +30,131 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
   --font-mono: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+}
+
+/* 2. 🌸 治愈温润：拿铁摩卡 (Catppuccin Mocha) */
+[data-theme="catppuccin"] {
+  --bg-app: #181825;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(203, 166, 247, 0.15) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(137, 180, 250, 0.12) 0px, transparent 50%);
+  --bg-panel: #1e1e2e;
+  --bg-card: rgba(30, 30, 46, 0.88);
+  --bg-card-hover: rgba(49, 50, 68, 0.95);
+  --bg-input: #11111b;
+  --border-subtle: rgba(203, 166, 247, 0.14);
+  --border-focus: #cba6f7;
+  --text-main: #cdd6f4;
+  --text-muted: #a6adc8;
+  --text-dim: #6c7086;
+  --primary: #cba6f7;
+  --primary-hover: #b4befe;
+  --primary-gradient: linear-gradient(135deg, #cba6f7 0%, #89b4fa 100%);
+  --primary-glow: rgba(203, 166, 247, 0.45);
+  --accent-cyan: #89dceb;
+  --accent-purple: #f5c2e7;
+  --accent-amber: #fab387;
+  --success: #a6e3a1;
+  --warning: #f9e2af;
+  --danger: #f38ba8;
+  --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.45);
+}
+
+/* 3. ⚡ 极客霓虹：东京赛博 (Tokyo Night / Cyberpunk) */
+[data-theme="tokyo"] {
+  --bg-app: #06070c;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(187, 154, 247, 0.18) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(125, 207, 255, 0.12) 0px, transparent 50%);
+  --bg-panel: #0d0f17;
+  --bg-card: rgba(16, 18, 28, 0.92);
+  --bg-card-hover: rgba(26, 29, 44, 0.95);
+  --bg-input: #040508;
+  --border-subtle: rgba(187, 154, 247, 0.18);
+  --border-focus: #bb9af7;
+  --text-main: #c0caf5;
+  --text-muted: #7aa2f7;
+  --text-dim: #565f89;
+  --primary: #bb9af7;
+  --primary-hover: #9d7cd8;
+  --primary-gradient: linear-gradient(135deg, #bb9af7 0%, #7dcfff 100%);
+  --primary-glow: rgba(187, 154, 247, 0.5);
+  --accent-cyan: #7dcfff;
+  --accent-purple: #f7768e;
+  --accent-amber: #e0af68;
+  --success: #9ece6a;
+  --warning: #e0af68;
+  --danger: #f7768e;
+  --shadow-card: 0 14px 35px -5px rgba(0, 0, 0, 0.8), 0 0 16px rgba(187, 154, 247, 0.15);
+}
+
+/* 4. ❄️ 北欧极简：极地冰霜 (Nordic Frost) */
+[data-theme="nord"] {
+  --bg-app: #1f232a;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(136, 192, 208, 0.14) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(129, 161, 193, 0.1) 0px, transparent 50%);
+  --bg-panel: #2e3440;
+  --bg-card: rgba(46, 52, 64, 0.88);
+  --bg-card-hover: rgba(59, 66, 82, 0.95);
+  --bg-input: #1b1e24;
+  --border-subtle: rgba(136, 192, 208, 0.16);
+  --border-focus: #88c0d0;
+  --text-main: #eceff4;
+  --text-muted: #d8dee9;
+  --text-dim: #4c566a;
+  --primary: #88c0d0;
+  --primary-hover: #81a1c1;
+  --primary-gradient: linear-gradient(135deg, #88c0d0 0%, #5e81ac 100%);
+  --primary-glow: rgba(136, 192, 208, 0.4);
+  --accent-cyan: #8fbcbb;
+  --accent-purple: #b48ead;
+  --accent-amber: #ebcb8b;
+  --success: #a3be8c;
+  --warning: #ebcb8b;
+  --danger: #bf616a;
+  --shadow-card: 0 12px 28px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* 5. ☀️ 晨曦明亮：苹果瓷白 (Vercel & macOS Clean Light) */
+[data-theme="light"] {
+  --bg-app: #f1f5f9;
+  --bg-app-gradient: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.06) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.05) 0px, transparent 50%);
+  --bg-panel: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --bg-card-hover: #f8fafc;
+  --bg-input: #f8fafc;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-focus: #2563eb;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --primary-glow: rgba(37, 99, 235, 0.25);
+  --accent-cyan: #0284c7;
+  --accent-purple: #7c3aed;
+  --accent-amber: #d97706;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --shadow-card: 0 10px 25px -4px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: var(--bg-app);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+  background-image: var(--bg-app-gradient);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -149,6 +265,161 @@ body {
   background: var(--success);
   box-shadow: 0 0 8px var(--success);
   animation: pulse-dot 2s infinite;
+}
+
+/* 🎨 皮肤主题切换下拉组件 */
+.theme-switcher-wrapper {
+  position: relative;
+  user-select: none;
+}
+
+.theme-switch-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-switch-btn:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.theme-btn-icon {
+  font-size: 0.95rem;
+}
+
+.theme-arrow-icon {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  transition: transform 0.2s ease;
+}
+
+.theme-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border-subtle);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  animation: themeMenuSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes themeMenuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.theme-menu-header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.5rem 0.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.2rem;
+}
+
+.theme-option {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.theme-option:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-subtle);
+}
+
+.theme-option.active {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.theme-color-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.dot-aurora {
+  background: linear-gradient(135deg, #080c16 0%, #6366f1 50%, #38bdf8 100%);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+}
+
+.dot-catppuccin {
+  background: linear-gradient(135deg, #181825 0%, #cba6f7 50%, #89b4fa 100%);
+  box-shadow: 0 0 8px rgba(203, 166, 247, 0.5);
+}
+
+.dot-tokyo {
+  background: linear-gradient(135deg, #06070c 0%, #bb9af7 50%, #7dcfff 100%);
+  box-shadow: 0 0 8px rgba(187, 154, 247, 0.5);
+}
+
+.dot-nord {
+  background: linear-gradient(135deg, #1f232a 0%, #88c0d0 50%, #5e81ac 100%);
+  box-shadow: 0 0 8px rgba(136, 192, 208, 0.5);
+}
+
+.dot-light {
+  background: linear-gradient(135deg, #ffffff 0%, #2563eb 50%, #0284c7 100%);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+}
+
+.theme-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.theme-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.theme-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
 }
 
 @keyframes pulse-dot {
@@ -2088,15 +2359,106 @@ select option {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.4);
+  background: var(--bg-input);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--border-subtle);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: var(--primary);
 }
+
+/* ==========================================================================
+   6. ☀️ 浅色主题 (Light Theme) 专项精细化适配
+   ========================================================================== */
+[data-theme="light"] .brand-name {
+  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .badge-tag {
+  background: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+[data-theme="light"] .nav-pill {
+  background: #ffffff;
+  color: #475569;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .drop-zone {
+  background: rgba(248, 250, 252, 0.9);
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="light"] .drop-zone:hover {
+  background: #ffffff;
+  border-color: var(--primary);
+}
+
+[data-theme="light"] .btn-swap {
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+[data-theme="light"] .conversion-intent-tip {
+  background: rgba(37, 99, 235, 0.06);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #1e40af;
+}
+
+[data-theme="light"] select optgroup {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .code-split-pane {
+  background: #ffffff;
+}
+
+[data-theme="light"] .code-area {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+[data-theme="light"] .tab-btn.active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .mode-btn.active {
+  background: #ffffff;
+  color: #2563eb;
+}
+
+[data-theme="light"] .view-tabs, [data-theme="light"] .preview-mode-pill {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .table-filter-bar {
+  background: #ffffff;
+}
+
+[data-theme="light"] .data-table thead tr {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .stat-pill {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
 

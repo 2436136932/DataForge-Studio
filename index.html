@@ -33,9 +33,55 @@
                 <span class="badge-tag">v3.0 全能旗舰版</span>
             </div>
             <div class="nav-badges">
-                <span class="nav-pill"><span class="dot green"></span> 本地引擎运转正常</span>
-                <span class="nav-pill">🔒 100% 离线沙箱隐私保护</span>
-                <span class="nav-pill">⚡ 多文档与数据秒级互转</span>
+                <span class="nav-pill"><span class="dot green"></span> 本地引擎正常</span>
+                <span class="nav-pill">🔒 100% 沙箱保护</span>
+
+                <!-- 🎨 皮肤主题切换下拉组件 -->
+                <div class="theme-switcher-wrapper">
+                    <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="切换界面视觉皮肤">
+                        <span class="theme-btn-icon">🎨</span>
+                        <span class="theme-btn-label" id="currentThemeLabel">深空极光</span>
+                        <span class="theme-arrow-icon">▾</span>
+                    </button>
+                    <div class="theme-dropdown-menu" id="themeDropdownMenu" style="display:none;">
+                        <div class="theme-menu-header">选择界面视觉主题</div>
+                        <button type="button" class="theme-option active" data-theme="aurora">
+                            <span class="theme-color-dot dot-aurora"></span>
+                            <div class="theme-info">
+                                <span class="theme-name">🌌 深空极光 (默认)</span>
+                                <span class="theme-desc">Linear 极深科技黑 · 霓虹天青</span>
+                            </div>
+                        </button>
+                        <button type="button" class="theme-option" data-theme="catppuccin">
+                            <span class="theme-color-dot dot-catppuccin"></span>
+                            <div class="theme-info">
+                                <span class="theme-name">🌸 拿铁摩卡</span>
+                                <span class="theme-desc">Catppuccin 柔和炭灰 · 丁香紫</span>
+                            </div>
+                        </button>
+                        <button type="button" class="theme-option" data-theme="tokyo">
+                            <span class="theme-color-dot dot-tokyo"></span>
+                            <div class="theme-info">
+                                <span class="theme-name">⚡ 东京赛博</span>
+                                <span class="theme-desc">Tokyo Night OLED 纯黑 · 电光紫</span>
+                            </div>
+                        </button>
+                        <button type="button" class="theme-option" data-theme="nord">
+                            <span class="theme-color-dot dot-nord"></span>
+                            <div class="theme-info">
+                                <span class="theme-name">❄️ 极地极简</span>
+                                <span class="theme-desc">Nord 极地冰川蓝 · 冷调蓝灰</span>
+                            </div>
+                        </button>
+                        <button type="button" class="theme-option" data-theme="light">
+                            <span class="theme-color-dot dot-light"></span>
+                            <div class="theme-info">
+                                <span class="theme-name">☀️ 晨曦明亮</span>
+                                <span class="theme-desc">Vercel & macOS 纯净瓷白高亮</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 

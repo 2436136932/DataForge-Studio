@@ -1140,6 +1140,69 @@ clearHistoryBtn.addEventListener('click', () => {
   historyCard.style.display = 'none';
 });
 
+// ==========================================================================
+// 🎨 多主题皮肤切换系统 (Theme Management Engine)
+// ==========================================================================
+const themeSwitchBtn = document.getElementById('themeSwitchBtn');
+const themeDropdownMenu = document.getElementById('themeDropdownMenu');
+const currentThemeLabel = document.getElementById('currentThemeLabel');
+const themeOptions = document.querySelectorAll('.theme-option');
+
+const themeNameMap = {
+  aurora: '🌌 深空极光',
+  catppuccin: '🌸 拿铁摩卡',
+  tokyo: '⚡ 东京赛博',
+  nord: '❄️ 极地极简',
+  light: '☀️ 晨曦明亮'
+};
+
+function applyTheme(themeName) {
+  const safeTheme = themeNameMap[themeName] ? themeName : 'aurora';
+  document.documentElement.setAttribute('data-theme', safeTheme);
+  localStorage.setItem('dataforge_theme', safeTheme);
+
+  if (currentThemeLabel) {
+    currentThemeLabel.textContent = themeNameMap[safeTheme];
+  }
+
+  themeOptions.forEach(opt => {
+    if (opt.dataset.theme === safeTheme) {
+      opt.classList.add('active');
+    } else {
+      opt.classList.remove('active');
+    }
+  });
+}
+
+// 切换下拉菜单
+if (themeSwitchBtn && themeDropdownMenu) {
+  themeSwitchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isShowing = themeDropdownMenu.style.display === 'flex';
+    themeDropdownMenu.style.display = isShowing ? 'none' : 'flex';
+  });
+
+  // 点击主题选项
+  themeOptions.forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      applyTheme(opt.dataset.theme);
+      themeDropdownMenu.style.display = 'none';
+    });
+  });
+
+  // 点击空白处关闭
+  document.addEventListener('click', (e) => {
+    if (!themeDropdownMenu.contains(e.target) && e.target !== themeSwitchBtn) {
+      themeDropdownMenu.style.display = 'none';
+    }
+  });
+}
+
+// 初始化主题 (读取 LocalStorage 或默认极光)
+const savedTheme = localStorage.getItem('dataforge_theme') || 'aurora';
+applyTheme(savedTheme);
+
 // 初始化
 updateTargetOptions();
 
