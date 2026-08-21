@@ -192,23 +192,76 @@ const FormatParsers = {
   },
   md: async (file) => {
     const text = await file.text();
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    const data = lines.map((line, i) => ({ '#': i + 1, '行内容': line }));
-    return { data, rawText: text, docType: 'doc' };
+    const rawParagraphs = text.split(/\r?\n\r?\n+/).map(p => p.trim()).filter(Boolean);
+    
+    // 智能提取 Markdown 各级大纲
+    const sections = [];
+    let curSec = { title: file.name.replace(/\.[^/.]+$/, ''), points: [] };
+
+    rawParagraphs.forEach(block => {
+      const match = block.match(/^(#{1,4})\s+(.+)$/m);
+      if (match) {
+        if (curSec.points.length > 0 || curSec.title !== file.name.replace(/\.[^/.]+$/, '')) {
+          sections.push(curSec);
+        }
+        curSec = { title: match[2].trim(), points: [] };
+        const rest = block.replace(/^(#{1,4})\s+(.+)$/m, '').trim();
+        if (rest) curSec.points.push(rest);
+      } else {
+        curSec.points.push(block);
+      }
+    });
+    if (curSec.points.length > 0 || sections.length === 0) {
+      sections.push(curSec);
+    }
+
+    const data = sections.map((sec, i) => ({
+      '#': i + 1,
+      '章节/段落': sec.title || `小节 #${i + 1}`,
+      '段落内容': sec.points.join('\n\n'),
+      '字数': sec.points.join('\n\n').length
+    }));
+
+    return { data, rawText: text, sections, docType: 'doc' };
   },
   txt: async (file) => {
     const text = await file.text();
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    const data = lines.map((line, i) => ({ '#': i + 1, '行内容': line }));
-    return { data, rawText: text, docType: 'doc' };
+    const rawParagraphs = text.split(/\r?\n\r?\n+/).map(p => p.trim()).filter(Boolean);
+    const data = rawParagraphs.map((para, i) => ({
+      '#': i + 1,
+      '章节/段落': para.length > 30 ? para.substring(0, 30) + '...' : `段落 #${i + 1}`,
+      '段落内容': para,
+      '字数': para.length
+    }));
+    const sections = rawParagraphs.map((para, i) => ({
+      title: `段落 #${i + 1}`,
+      points: [para]
+    }));
+    return { data, rawText: text, sections, docType: 'doc' };
   },
   html: async (file) => {
     const text = await file.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
-    const plain = doc.body ? doc.body.textContent.trim() : text;
-    const lines = plain.split(/\r?\n/).filter(Boolean);
-    const data = lines.map((line, i) => ({ '#': i + 1, '网页内容': line }));
+    const elements = Array.from(doc.querySelectorAll('h1, h2, h3, h4, p, li, table'));
+    
+    let data = [];
+    if (elements.length > 0) {
+      data = elements.map((el, i) => ({
+        '#': i + 1,
+        '章节/段落': el.tagName.toUpperCase() + ': ' + el.textContent.trim().substring(0, 30),
+        '段落内容': el.textContent.trim(),
+        '字数': el.textContent.trim().length
+      }));
+    } else {
+      const plain = doc.body ? doc.body.textContent.trim() : text;
+      data = plain.split(/\r?\n+/).filter(Boolean).map((line, i) => ({
+        '#': i + 1,
+        '章节/段落': `文本 #${i + 1}`,
+        '段落内容': line
+      }));
+    }
+
     return { data, rawText: text, html: text, docType: 'doc' };
   }
 };
@@ -477,7 +530,13 @@ const FormatGenerators = {
       </xml>
       <![endif]-->
       <style>
+        @page {
+          size: ${keys.length > 6 ? 'landscape' : 'portrait'};
+          margin: 18mm 15mm;
+        }
         body { font-family: 'Calibri', 'SimSun', 'Microsoft YaHei', sans-serif; }
+        table { border-collapse: collapse; width: 100%; table-layout: auto; word-break: break-word; }
+        th, td { font-size: ${keys.length > 8 ? '8.5pt' : '10pt'}; }
       </style>
     </head>
     <body>
@@ -583,8 +642,22 @@ const FormatGenerators = {
       text: content
     };
   },
+    // 7. 生成 Excel 工作簿 (.xlsx)
   xlsx: (data, options = {}) => {
-    const ws = XLSX.utils.json_to_sheet(data);
+    // 预处理：防止嵌套对象变成 [object Object]
+    const cleanData = data.map(row => {
+      const newRow = {};
+      Object.entries(row).forEach(([k, v]) => {
+        if (v !== null && typeof v === 'object') {
+          newRow[k] = JSON.stringify(v);
+        } else {
+          newRow[k] = v;
+        }
+      });
+      return newRow;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(cleanData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, options.sheetName || 'Sheet1');
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
@@ -593,8 +666,46 @@ const FormatGenerators = {
       ext: 'xlsx'
     };
   },
+
+  // 8. 生成 Excel 97-2003 (.xls)
+  xls: (data, options = {}) => {
+    const cleanData = data.map(row => {
+      const newRow = {};
+      Object.entries(row).forEach(([k, v]) => {
+        if (v !== null && typeof v === 'object') {
+          newRow[k] = JSON.stringify(v);
+        } else {
+          newRow[k] = v;
+        }
+      });
+      return newRow;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(cleanData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, options.sheetName || 'Sheet1');
+    const wbout = XLSX.write(wb, { bookType: 'biff8', type: 'array' });
+    return {
+      blob: new Blob([wbout], { type: 'application/vnd.ms-excel' }),
+      ext: 'xls'
+    };
+  },
+
+  // 9. 生成 CSV (.csv)
   csv: (data, options = {}) => {
-    const ws = XLSX.utils.json_to_sheet(data);
+    const cleanData = data.map(row => {
+      const newRow = {};
+      Object.entries(row).forEach(([k, v]) => {
+        if (v !== null && typeof v === 'object') {
+          newRow[k] = JSON.stringify(v);
+        } else {
+          newRow[k] = v;
+        }
+      });
+      return newRow;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(cleanData);
     const csv = XLSX.utils.sheet_to_csv(ws);
     const prefix = options.bom !== false ? '\ufeff' : '';
     return {
