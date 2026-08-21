@@ -192,7 +192,179 @@ function setStatus(msg, type = '') {
   statusDiv.className = 'status-banner' + (type ? ' ' + type : '');
 }
 
-// 更新目标格式下拉菜单 (按数据/文档进行 optgroup 分组)
+const conversionIntentTip = document.getElementById('conversionIntentTip');
+const intentText = document.getElementById('intentText');
+
+// 智能转换推荐规则库 (基于数据语义与办公实际场景)
+const smartRecommendationRules = {
+  pptx: {
+    recommended: [
+      { fmt: 'pdf', label: 'PDF 导出讲义 (.pdf) · 便于打印/分发' },
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 提炼演讲大纲与纪要' },
+      { fmt: 'md', label: 'Markdown 文档 (.md) · 知识库大纲整理' },
+      { fmt: 'html', label: 'HTML 网页 (.html) · 浏览器幻灯片展示' }
+    ],
+    advanced: [
+      { fmt: 'txt', label: '纯文本 (.txt) · 提取文字流' },
+      { fmt: 'json', label: 'JSON 数据 (.json) · 幻灯片结构对象' },
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 提取为单列文本表格' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv) · 提取为数据行' }
+    ],
+    hint: '💡 推荐将 PPT 导出为 PDF 讲义打印分发，或提炼为 Word / Markdown 大纲纪要。'
+  },
+  docx: {
+    recommended: [
+      { fmt: 'pdf', label: 'PDF 导出文档 (.pdf) · 标准排版归档/防篡改' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx) · 章节大纲一键转幻灯片' },
+      { fmt: 'md', label: 'Markdown 文档 (.md) · 技术文档/知识库' },
+      { fmt: 'html', label: 'HTML 网页 (.html) · Web 页面发布' }
+    ],
+    advanced: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 章节转化为数据行' },
+      { fmt: 'txt', label: '纯文本 (.txt) · 去除排版提取纯文本' },
+      { fmt: 'json', label: 'JSON 数据 (.json) · 段落结构化对象' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv)' }
+    ],
+    hint: '💡 推荐将 Word 转为 PDF 进行标准化归档，或将大纲转化为 PPT 商务演示。'
+  },
+  pdf: {
+    recommended: [
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 提取文本与二次编辑' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx) · 逐页转化为幻灯片' },
+      { fmt: 'md', label: 'Markdown 结构化大纲 (.md)' },
+      { fmt: 'txt', label: '纯文本 (.txt) · 提取全文字流' }
+    ],
+    advanced: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 提取数据行(适合表格型PDF)' },
+      { fmt: 'json', label: 'JSON 数据 (.json)' },
+      { fmt: 'html', label: 'HTML 网页 (.html)' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv)' }
+    ],
+    hint: '💡 推荐将 PDF 提取至 Word/Markdown 进行可编辑流转，或转为 PPT 演示文稿。'
+  },
+  xlsx: {
+    recommended: [
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv) · 数据清洗与数据库导入' },
+      { fmt: 'json', label: 'JSON 数据 (.json) · 前端与 API 结构化对象' },
+      { fmt: 'jsonl', label: 'JSONL 行记录 (.jsonl) · AI 训练集/大数据' },
+      { fmt: 'pdf', label: 'PDF 数据报表 (.pdf) · 斑马条纹 A4 打印报表' },
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 排版表格文档' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx) · 商务数据图表幻灯片' }
+    ],
+    advanced: [
+      { fmt: 'xls', label: 'Excel 97-2003 (.xls)' },
+      { fmt: 'html', label: 'HTML 网页 (.html) · 网页数据表格' },
+      { fmt: 'md', label: 'Markdown 文档 (.md)' },
+      { fmt: 'txt', label: '纯文本 (.txt)' }
+    ],
+    hint: '💡 推荐将 Excel 清洗为 CSV/JSON，或一键排版生成 PDF 报表与 PPT 商务演示。'
+  },
+  xls: {
+    recommended: [
+      { fmt: 'xlsx', label: 'Excel 2007+ (.xlsx) · 升级至最新工作簿标准' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv)' },
+      { fmt: 'json', label: 'JSON 结构化数据 (.json)' },
+      { fmt: 'pdf', label: 'PDF 数据报表 (.pdf)' }
+    ],
+    advanced: [
+      { fmt: 'jsonl', label: 'JSONL 行记录 (.jsonl)' },
+      { fmt: 'docx', label: 'Word 文档 (.docx)' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx)' },
+      { fmt: 'html', label: 'HTML 网页 (.html)' }
+    ],
+    hint: '💡 推荐将旧版 XLS 升级为现代 XLSX 格式，或导出为标准 CSV/JSON。'
+  },
+  json: {
+    recommended: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 扁平化导出电子表格' },
+      { fmt: 'jsonl', label: 'JSONL 行记录 (.jsonl) · 单行数据流转换' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv) · 数据库与分析导入' },
+      { fmt: 'pdf', label: 'PDF 矢量数据报表 (.pdf)' },
+      { fmt: 'docx', label: 'Word 表格文档 (.docx)' }
+    ],
+    advanced: [
+      { fmt: 'pptx', label: 'PowerPoint 商务幻灯片 (.pptx)' },
+      { fmt: 'html', label: 'HTML 网页 (.html)' },
+      { fmt: 'md', label: 'Markdown 结构化文档 (.md)' },
+      { fmt: 'txt', label: '纯文本 (.txt)' }
+    ],
+    hint: '💡 推荐将 JSON 数据一键转化为 Excel 电子表格，或转换 JSONL/CSV 进行数据流转。'
+  },
+  jsonl: {
+    recommended: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 结构化电子表格' },
+      { fmt: 'json', label: 'JSON 数组格式 (.json) · 标准对象数组' },
+      { fmt: 'csv', label: 'CSV 逗号分隔 (.csv)' },
+      { fmt: 'pdf', label: 'PDF 数据报表 (.pdf)' }
+    ],
+    advanced: [
+      { fmt: 'docx', label: 'Word 表格文档 (.docx)' },
+      { fmt: 'pptx', label: 'PowerPoint 幻灯片 (.pptx)' },
+      { fmt: 'html', label: 'HTML 网页 (.html)' },
+      { fmt: 'md', label: 'Markdown 文档 (.md)' }
+    ],
+    hint: '💡 推荐将 JSONL 记录集导出为 Excel/CSV 或格式化为标准 JSON 数组。'
+  },
+  csv: {
+    recommended: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx) · 多功能电子表格' },
+      { fmt: 'json', label: 'JSON 结构化数据 (.json)' },
+      { fmt: 'jsonl', label: 'JSONL 行记录流 (.jsonl)' },
+      { fmt: 'pdf', label: 'PDF 矢量报表 (.pdf)' }
+    ],
+    advanced: [
+      { fmt: 'docx', label: 'Word 表格文档 (.docx)' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx)' },
+      { fmt: 'html', label: 'HTML 数据网页 (.html)' },
+      { fmt: 'md', label: 'Markdown 文档 (.md)' }
+    ],
+    hint: '💡 推荐将 CSV 快速转换为带有网格的 Excel 工作簿或结构化 JSON 对象。'
+  },
+  md: {
+    recommended: [
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 专业排版打印导出' },
+      { fmt: 'pdf', label: 'PDF 导出文档 (.pdf) · 标准文档发布' },
+      { fmt: 'html', label: 'HTML 网页 (.html) · Web 富文本展示' },
+      { fmt: 'pptx', label: 'PowerPoint 演示文稿 (.pptx) · 大纲转幻灯片' }
+    ],
+    advanced: [
+      { fmt: 'txt', label: '纯文本 (.txt)' },
+      { fmt: 'xlsx', label: 'Excel 表格 (.xlsx)' },
+      { fmt: 'json', label: 'JSON 数据 (.json)' }
+    ],
+    hint: '💡 推荐将 Markdown 导出为 Word/PDF 专业排版文档，或快速生成 PPT 幻灯片。'
+  },
+  txt: {
+    recommended: [
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 转换为排版文档' },
+      { fmt: 'pdf', label: 'PDF 导出 (.pdf) · 打印版面' },
+      { fmt: 'md', label: 'Markdown 文档 (.md) · 结构化整理' }
+    ],
+    advanced: [
+      { fmt: 'html', label: 'HTML 网页 (.html)' },
+      { fmt: 'pptx', label: 'PowerPoint (.pptx)' },
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx)' },
+      { fmt: 'json', label: 'JSON 数据 (.json)' }
+    ],
+    hint: '💡 推荐将纯文本整理为 Word 或 Markdown 格式。'
+  },
+  html: {
+    recommended: [
+      { fmt: 'pdf', label: 'PDF 矢量打印 (.pdf)' },
+      { fmt: 'docx', label: 'Word 文档 (.docx) · 网页转排版文档' },
+      { fmt: 'md', label: 'Markdown 文档 (.md) · 网页转技术大纲' }
+    ],
+    advanced: [
+      { fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx)' },
+      { fmt: 'pptx', label: 'PowerPoint (.pptx)' },
+      { fmt: 'txt', label: '纯文本 (.txt)' },
+      { fmt: 'json', label: 'JSON 数据 (.json)' }
+    ],
+    hint: '💡 推荐将 HTML 网页内容导出为标准 PDF 或 Word 文档。'
+  }
+};
+
+// 更新目标格式下拉菜单 (按 🔥 最佳推荐常用 + ⚙️ 辅助与全能导出 分组)
 function updateTargetOptions() {
   const currentSrc = srcFormatSelect.value;
   const currentTarget = targetFormatSelect.value;
@@ -200,55 +372,50 @@ function updateTargetOptions() {
   fileInput.accept = formatAcceptMap[currentSrc] || '';
   dropHint.textContent = formatHints[currentSrc] || '';
 
-  const dataFormats = ['xlsx', 'xls', 'json', 'jsonl', 'csv'];
-  const docFormats = ['docx', 'pptx', 'pdf', 'md', 'txt', 'html'];
+  const rule = smartRecommendationRules[currentSrc] || {
+    recommended: [{ fmt: 'docx', label: 'Word 文档 (.docx)' }, { fmt: 'pdf', label: 'PDF 导出文档 (.pdf)' }],
+    advanced: [{ fmt: 'xlsx', label: 'Excel 工作簿 (.xlsx)' }, { fmt: 'json', label: 'JSON 数据 (.json)' }],
+    hint: '💡 选择最适合您的目标导出格式。'
+  };
+
+  // 更新意图提示条
+  if (intentText) {
+    intentText.textContent = rule.hint;
+  }
 
   targetFormatSelect.innerHTML = '';
 
-  // 1. 数据与表格分组 (置顶)
-  const optGroupData = document.createElement('optgroup');
-  optGroupData.label = '📊 表格与数据';
-  dataFormats.forEach(fmt => {
-    if (fmt !== currentSrc || fmt === 'xlsx') {
+  // 1. 🔥 最佳推荐常用 (自然高价值流向)
+  if (rule.recommended && rule.recommended.length > 0) {
+    const optGroupRec = document.createElement('optgroup');
+    optGroupRec.label = '🔥 最佳推荐常用 (自然高价值流向)';
+    rule.recommended.forEach(item => {
       const opt = document.createElement('option');
-      opt.value = fmt;
-      opt.textContent = formatLabels[fmt] || fmt.toUpperCase();
-      optGroupData.appendChild(opt);
-    }
-  });
-  if (optGroupData.children.length > 0) {
-    targetFormatSelect.appendChild(optGroupData);
+      opt.value = item.fmt;
+      opt.textContent = item.label;
+      optGroupRec.appendChild(opt);
+    });
+    targetFormatSelect.appendChild(optGroupRec);
   }
 
-  // 2. 文档与演示文稿分组
-  const optGroupDoc = document.createElement('optgroup');
-  optGroupDoc.label = '📄 文档与演示文稿';
-  docFormats.forEach(fmt => {
-    if (fmt !== currentSrc) {
+  // 2. ⚙️ 辅助与全能导出 (特殊提取需求)
+  if (rule.advanced && rule.advanced.length > 0) {
+    const optGroupAdv = document.createElement('optgroup');
+    optGroupAdv.label = '⚙️ 辅助与全能导出 (特殊提取需求)';
+    rule.advanced.forEach(item => {
       const opt = document.createElement('option');
-      opt.value = fmt;
-      opt.textContent = formatLabels[fmt] || fmt.toUpperCase();
-      optGroupDoc.appendChild(opt);
-    }
-  });
-  if (optGroupDoc.children.length > 0) {
-    targetFormatSelect.appendChild(optGroupDoc);
+      opt.value = item.fmt;
+      opt.textContent = item.label;
+      optGroupAdv.appendChild(opt);
+    });
+    targetFormatSelect.appendChild(optGroupAdv);
   }
 
-  // 保持原有选择或智能推荐默认
+  // 保持原有选择或智能选中推荐第一项
   if (currentTarget && targetFormatSelect.querySelector(`option[value="${currentTarget}"]`)) {
     targetFormatSelect.value = currentTarget;
-  } else {
-    // 默认推荐
-    if (currentSrc === 'xlsx' || currentSrc === 'xls') {
-      targetFormatSelect.value = 'docx';
-    } else if (currentSrc === 'docx' || currentSrc === 'pdf' || currentSrc === 'pptx') {
-      targetFormatSelect.value = 'xlsx';
-    } else if (currentSrc === 'json' || currentSrc === 'jsonl' || currentSrc === 'csv') {
-      targetFormatSelect.value = 'xlsx';
-    } else {
-      targetFormatSelect.value = 'xlsx';
-    }
+  } else if (rule.recommended && rule.recommended.length > 0) {
+    targetFormatSelect.value = rule.recommended[0].fmt;
   }
 }
 
