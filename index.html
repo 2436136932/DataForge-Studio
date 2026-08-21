@@ -162,9 +162,36 @@
                         <div class="drop-zone" id="dropZone">
                             <input type="file" id="fileInput" accept=".xlsx,.xls,.docx,.pptx,.pdf,.json,.jsonl,.csv,.md,.txt,.html" />
                             <div class="drop-prompt" id="dropPrompt">
-                                <div class="drop-icon-anim">📁</div>
+                                <div class="drop-illustration-wrap">
+                                    <div class="drop-icon-glow"></div>
+                                    <div class="drop-icon-anim">
+                                        <svg width="54" height="54" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="6" y="10" width="36" height="30" rx="8" fill="url(#drop-folder-bg)" stroke="url(#drop-folder-stroke)" stroke-width="2"/>
+                                            <path d="M6 18C6 14.6863 8.68629 12 12 12H19.5858C20.6466 12 21.664 12.4214 22.4142 13.1716L24.8284 15.5858C25.5786 16.336 26.596 16.7574 27.6569 16.7574H36C39.3137 16.7574 42 19.4436 42 22.7574V32C42 35.3137 39.3137 38 36 38H12C8.68629 38 6 35.3137 6 32V18Z" fill="url(#drop-folder-front)" fill-opacity="0.85"/>
+                                            <path d="M24 22V32M24 22L20 26M24 22L28 26" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <defs>
+                                                <linearGradient id="drop-folder-bg" x1="6" y1="10" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+                                                    <stop stop-color="#6366f1" stop-opacity="0.6"/>
+                                                    <stop offset="1" stop-color="#38bdf8" stop-opacity="0.3"/>
+                                                </linearGradient>
+                                                <linearGradient id="drop-folder-stroke" x1="6" y1="10" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+                                                    <stop stop-color="#38bdf8"/>
+                                                    <stop offset="1" stop-color="#c084fc"/>
+                                                </linearGradient>
+                                                <linearGradient id="drop-folder-front" x1="6" y1="14" x2="42" y2="38" gradientUnits="userSpaceOnUse">
+                                                    <stop stop-color="#4f46e5" stop-opacity="0.9"/>
+                                                    <stop offset="1" stop-color="#0284c7" stop-opacity="0.85"/>
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                    <span class="float-tag float-tag-1">Word</span>
+                                    <span class="float-tag float-tag-2">Excel</span>
+                                    <span class="float-tag float-tag-3">PDF</span>
+                                    <span class="float-tag float-tag-4">JSON</span>
+                                </div>
                                 <div class="drop-primary-text">点击选择 或 拖拽文件至此处</div>
-                                <div class="drop-secondary-text" id="dropHint">支持 Word、PPT、PDF、Excel、JSON、CSV 等</div>
+                                <div class="drop-secondary-text" id="dropHint">支持 Word、PPT、PDF、Excel、JSON、CSV 等任意格式</div>
                             </div>
                             <div class="file-loaded-card" id="fileLoadedCard" style="display:none;">
                                 <div class="file-card-icon" id="fileCardIcon">📄</div>
@@ -284,11 +311,17 @@
 
                     <!-- 工作区视图内容容器 -->
                     <div class="workspace-body">
-                        <!-- 空状态提示 -->
+                        <!-- 空状态提示 (带 3D 渲染插画与流动光环) -->
                         <div class="empty-state" id="emptyState">
-                            <div class="empty-icon">📁</div>
-                            <h3>暂无数据或文档预览</h3>
-                            <p>在左侧选择 Word、PPT、PDF、Excel 或 JSON 文件导入，即可在此实时查看多格式转换、大纲排版与双栏对照。</p>
+                            <div class="hero-art-container">
+                                <div class="hero-glow-ring"></div>
+                                <div class="hero-glow-ring ring-secondary"></div>
+                                <img src="assets/hero_converter.jpg" alt="DataForge Universal Converter" class="hero-converter-img" />
+                                <div class="hero-floating-chip chip-left">⚡ 100% 极速沙箱解析</div>
+                                <div class="hero-floating-chip chip-right">✨ 真实多格式双栏对照</div>
+                            </div>
+                            <h3>全能文档与数据转换工作台</h3>
+                            <p>在左侧选择 Word、PPT、PDF、Excel、JSON 或 CSV 文件导入，即可在此实时查看多格式转换、大纲排版与双栏对照。</p>
 
                             <div class="flow-pills">
                                 <span>1. 选定目标格式</span>
