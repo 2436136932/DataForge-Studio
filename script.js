@@ -951,6 +951,31 @@ tableSearchInput.addEventListener('input', (e) => {
   }
 });
 
+// 安全剪贴板复制工具 (现代 API + 降级兼容)
+async function safeCopyToClipboard(text, btn, successLabel) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+    const origText = btn.textContent;
+    btn.textContent = successLabel;
+    setTimeout(() => (btn.textContent = origText), 2000);
+  } catch (err) {
+    console.warn('剪贴板复制降级:', err);
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => (btn.textContent = '📋 复制数据'), 2000);
+  }
+}
+
 // 一键复制转换前 (源) 数据
 copySourceCodeBtn.addEventListener('click', () => {
   if (parsedDataset.length === 0) return;
@@ -958,11 +983,7 @@ copySourceCodeBtn.addEventListener('click', () => {
     ? sourceRawContent
     : JSON.stringify(parsedDataset, null, 2);
 
-  navigator.clipboard.writeText(contentToCopy).then(() => {
-    const originalText = copySourceCodeBtn.textContent;
-    copySourceCodeBtn.textContent = '✓ 已复制源数据';
-    setTimeout(() => (copySourceCodeBtn.textContent = originalText), 2000);
-  });
+  safeCopyToClipboard(contentToCopy, copySourceCodeBtn, '✓ 已复制源数据');
 });
 
 // 一键复制转换后 (目标) 数据
@@ -978,12 +999,7 @@ copyTargetCodeBtn.addEventListener('click', () => {
   };
 
   const fullText = window.FileConverter.getFullTargetText(parsedDataset, targetFormat, options);
-
-  navigator.clipboard.writeText(fullText).then(() => {
-    const originalText = copyTargetCodeBtn.textContent;
-    copyTargetCodeBtn.textContent = '✓ 已复制目标数据';
-    setTimeout(() => (copyTargetCodeBtn.textContent = originalText), 2000);
-  });
+  safeCopyToClipboard(fullText, copyTargetCodeBtn, '✓ 已复制目标数据');
 });
 
 // 移除文件并重置工作区

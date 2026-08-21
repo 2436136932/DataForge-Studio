@@ -164,8 +164,14 @@ const FormatParsers = {
     } catch (e) {
       throw new Error(`JSON 解析错误: ${e.message}`);
     }
-    const data = Array.isArray(parsed) ? parsed : (typeof parsed === 'object' && parsed !== null ? [parsed] : null);
-    if (!data) throw new Error('JSON 格式无效，必须为数组或对象');
+    let rawData = Array.isArray(parsed) ? parsed : (typeof parsed === 'object' && parsed !== null ? [parsed] : null);
+    if (!rawData) throw new Error('JSON 格式无效，必须为数组或对象');
+
+    const data = rawData.map(item => {
+      if (item !== null && typeof item === 'object') return item;
+      return { '值': item };
+    });
+
     return { data, rawText: text, docType: 'table' };
   },
   jsonl: async (file) => {
@@ -575,8 +581,11 @@ const FormatGenerators = {
       const keys = data.length > 0 ? Object.keys(data[0]) : [];
       const header = `| ${keys.join(' | ')} |`;
       const divider = `| ${keys.map(() => '---').join(' | ')} |`;
-      const rows = data.map(r => `| ${keys.map(k => String(r[k] ?? '').replace(/\|/g, '\\|')).join(' | ')} |`);
-      content = `# 数据报表\n\n${header}\n${divider}\n${rows.join('\n')}`;
+      const rows = data.map(r => `| ${keys.map(k => {
+        const val = r[k] === null || r[k] === undefined ? '' : (typeof r[k] === 'object' ? JSON.stringify(r[k]) : String(r[k]));
+        return val.replace(/\r?\n/g, '<br>').replace(/\|/g, '\\|');
+      }).join(' | ')} |`);
+      content = `# ${options.title || '数据报表'}\n\n${header}\n${divider}\n${rows.join('\n')}`;
     }
 
     return {
